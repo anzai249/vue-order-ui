@@ -82,7 +82,7 @@ export default {
       //   message.error("請輸入正確的手機號碼");
       //   return;
       // }
-      this.$root.startLoading(() => {
+      // 等待fetch結束
         fetch(
           'https://linebot.sleepingbed.top/order',
           {
@@ -102,10 +102,12 @@ export default {
             })
           }
         )
+      .then(res => {
         message.success("成功");
         this.$store.commit("cleanCart");
-        this.$router.push("/");
-      });
+        // close site
+        window.close();
+      })
     }
   },
   components: {LeftOutlined}

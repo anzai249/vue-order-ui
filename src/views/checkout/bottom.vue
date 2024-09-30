@@ -6,7 +6,7 @@
     </div>
     <div class="button">
       <router-link to="/payment">
-        <a-button type="primary" shape="round" :disabled="!$store.getters.getTotal">前往付款</a-button>
+        <a-button type="primary" shape="round" :disabled="!$store.getters.getTotal">下訂單</a-button>
       </router-link>
     </div>
   </div>
