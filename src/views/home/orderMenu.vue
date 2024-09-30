@@ -1,6 +1,14 @@
 <template>
   <div id="menu">
-    <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" :id="`foodItem_${key+1}`">
+    <div class="filter">
+      <a-radio-group size="large" v-model:value="typeFilter" button-style="solid">
+        <a-radio-button value="水菜">水菜</a-radio-button>
+        <a-radio-button value="大菜">大菜</a-radio-button>
+        <a-radio-button value="根莖類">根莖類</a-radio-button>
+        <a-radio-button value="豆類菇類小包菜">豆類菇類小包菜</a-radio-button>
+      </a-radio-group>
+    </div>
+    <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" v-show="typeFilter===key" :id="`foodItem_${key}`">
       <span class="title">
         {{ key }}
       </span>
@@ -86,7 +94,8 @@ export default {
     return {
       view: false,
       viewTarget: null,
-      viewCustom: []
+      viewCustom: [],
+      typeFilter: "水菜"
     }
   },
   methods: {
@@ -140,6 +149,12 @@ export default {
 #menu {
   margin-top: 10px;
   display: block;
+
+  .filter {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+  }
 
   .block {
     padding: 0 10px;

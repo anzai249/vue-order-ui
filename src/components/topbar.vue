@@ -5,14 +5,14 @@
       <a-drawer :width="280" title="分類" :visible="drawerVisible" @close="drawerVisible = !1" :closable="false"
                 placement="left">
         <a-menu mode="inline">
-          <a-sub-menu>
+          <!-- <a-sub-menu>
             <template #title>
               分類
             </template>
-            <a-menu-item v-for="(item, key) in $store.state.menu" :key="key + 1">
-              <router-link to="/" @click="scrollTo(key + 1)">{{ item.name }}</router-link>
+            <a-menu-item v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" :key="key">
+              <router-link to="/" @click="scrollTo('foodItem_'+key)">{{ key }}</router-link>
             </a-menu-item>
-          </a-sub-menu>
+          </a-sub-menu> -->
           <a-menu-item key="4">
             <router-link to="/checkout">購物車</router-link>
           </a-menu-item>
