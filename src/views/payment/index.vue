@@ -90,12 +90,15 @@ export default {
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-              name: this.name,
-              phone: this.phone,
-              address: this.address,
-              food: this.$store.getters.getAllFood,
-              user: this.$store.state.user
+            body: JSON.stringify(
+              {
+                "customer": {
+                    "name": this.name,
+                    "phone": this.phone,
+                    "address": this.address
+                },
+                "user": this.$store.state.user,
+                "items": this.$store.getters.getAllFood
             })
           }
         )

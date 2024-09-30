@@ -138,11 +138,11 @@ const store = createStore({
           key++;
         }
       })
+      console.log("foodList", foodList);
       return foodList;
     },
     calcPrice() {
       return (item) => {
-        console.log(item);
         let price = item.selling_price;
         item.custom.forEach((item) => {
           price += item.selling_price;
