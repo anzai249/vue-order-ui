@@ -2,7 +2,7 @@
   <div id="bottom">
     <div class="count">
       <span class="text">總計: </span>
-      <span class="price" style="color: red">HKD {{ $store.getters.getTotal }}</span>
+      <span class="price" style="color: red">NT$ {{ $store.getters.getTotal }}</span>
     </div>
     <div class="button">
       <router-link to="/payment">

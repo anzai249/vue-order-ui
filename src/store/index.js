@@ -4,23 +4,38 @@ import {message} from "ant-design-vue";
 // plugin
 import {listenCart} from "./plugin.js";
 
-import menu from "../app/menu.json"
+// import menu from "../app/menu.json"
 
 // give id
-let id = 1
-menu.forEach(item => {
-  item.items.forEach(item => {
-    item.id = id++
-    if (!item.img.includes("http")) {
-      item.img = require("../app/img/" + item.img)
-    }
-  })
-})
+// let id = 1
+// menu.forEach(item => {
+//   item.items.forEach(item => {
+//     item.id = id++
+//     if (!item.img.includes("http")) {
+//       item.img = require("../app/img/" + item.img)
+//     }
+//   })
+// })
+
+
+fetch("https://linebot.sleepingbed.top/api/menu/",
+  {method: "GET", headers: {"Content-Type": "application/json"}}
+).then(res => res.json()).then(res => {
+  console.log(res)
+  store.state.menu = res
+});
+
+const url = new URL(window.location.href);
+const params = new URLSearchParams(url.search);
+if (!params.get("userid")) {
+  message.error("無法獲取用戶ID，請回到LINE重新點擊");
+}
 
 const store = createStore({
   state: {
-    "menu": menu,
-    "cart": []
+    "menu": [],
+    "cart": [],
+    "user": params.get("userid")
   },
   mutations: {
     orderFood(state, [foodid, custom]) {
@@ -48,20 +63,6 @@ const store = createStore({
         state.cart.push(newFood);
       }
       message.success("已加入購物車")
-      // === 彩蛋，可删除 ===
-      // if (this.getters.getTotal > 1000) {
-      //   if (this.getters.getTotal > 1500) {
-      //     let output = ""
-      //     // for 1500-1400 / 100 round up
-      //     for (let i = 0; i < Math.ceil((this.getters.getTotal - 1500) / 100); i++) {
-      //       if (output.length < 20)
-      //         output += "6"
-      //     }
-      //     message.warn(output)
-      //   } else
-      //     message.warn("兄弟你们公司团建吗？")
-      // }
-      // === 彩蛋，可删除 ===
     },
     removeFood(state, [foodid, key]) {
       let found = state.cart.find((item) => item.id === foodid);
@@ -89,7 +90,7 @@ const store = createStore({
     findFood(state) {
       // found in menu
       return (foodid) => {
-        return state.menu.map((item) => item.items).flat().find((item) => item.id === foodid);
+        return state.menu.map((item) => item).flat().find((item) => item.id === foodid);
       }
     },
     findCart(state) {
@@ -111,10 +112,10 @@ const store = createStore({
     getTotal(state) {
       let price = 0;
       state.cart.forEach((food) => {
-        price += food.price * food.count;
+        price += food.selling_price * food.count;
         food.custom.forEach((customList) => {
           customList.forEach((custom) => {
-            price += custom.price;
+            price += custom.selling_price;
           })
         })
       })
@@ -142,9 +143,9 @@ const store = createStore({
     calcPrice() {
       return (item) => {
         console.log(item);
-        let price = item.price;
+        let price = item.selling_price;
         item.custom.forEach((item) => {
-          price += item.price;
+          price += item.selling_price;
         })
         return price;
       }

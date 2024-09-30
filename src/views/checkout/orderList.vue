@@ -15,7 +15,7 @@
             取消
           </a-button>
           <a-button type="primary" danger @click="cleanCart">
-            確定
+            確認
           </a-button>
         </template>
       </a-modal>
@@ -25,7 +25,7 @@
         <a-list-item>
           <a-list-item-meta :title="item.name">
             <template #description>
-              <span style="color: red;display: block">HKD {{ $store.getters.calcPrice(item) }}</span>
+              <span style="color: red;display: block">NT$ {{ $store.getters.calcPrice(item) }}</span>
               <span style="color: gray;display: block" v-for="custom in item.custom" :key="custom.id">
                - {{ custom.name }}
             </span>
@@ -41,7 +41,7 @@
               </template>
             </a-button>
             <a-button type="primary" @click="$store.commit('removeFood', [item.id])" danger shape="round">
-              从购物车中移除
+              從購物車中移除
             </a-button>
           </a-space>
         </a-list-item>

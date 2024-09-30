@@ -1,6 +1,6 @@
 <template>
   <a-config-provider :autoInsertSpaceInButton="false">
-    <a-spin :spinning="loading" size="large" tip="免密支付中...">
+    <a-spin :spinning="loading" size="large" tip="下單中...">
       <Topbar/>
       <div class="fadeTopbar"></div>
       <router-view v-slot="{ Component }" :style="{'overflow-y':!loading || 'hidden'}">
@@ -27,10 +27,9 @@ export default {
   },
   components: {Topbar},
   mounted() {
-    // check localStorage to see if there is a cart
     if (localStorage.getItem(`${lc}-cart`)) {
       if (localStorage.getItem(`${lc}-menu`) !== JSON.stringify(this.$store.state.menu)) {
-        message.warning("菜单已更新，請重新選購");
+        message.warning("菜單已更新，請重新選購");
       } else {
         this.$store.commit("setCart", JSON.parse(localStorage.getItem(`${lc}-cart`)));
         restoreMsg();
@@ -44,7 +43,7 @@ export default {
       setTimeout(() => {
         this.loading = false;
         callback();
-      }, Math.floor(Math.random() * 2000) + 4000);
+      }, Math.floor(Math.random() * 2000));
     }
   }
 }

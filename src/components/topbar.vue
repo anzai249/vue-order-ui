@@ -7,7 +7,7 @@
         <a-menu mode="inline">
           <a-sub-menu>
             <template #title>
-              食物分類
+              分類
             </template>
             <a-menu-item v-for="(item, key) in $store.state.menu" :key="key + 1">
               <router-link to="/" @click="scrollTo(key + 1)">{{ item.name }}</router-link>
@@ -37,7 +37,7 @@
 
 <script>
 import {MenuUnfoldOutlined, ShoppingCartOutlined} from '@ant-design/icons-vue'
-import {selecter as $} from "fastjs-next"
+// import {selecter as $} from "jsfast"
 
 export default {
   name: "topbar",

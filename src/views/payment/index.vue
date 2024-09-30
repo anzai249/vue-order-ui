@@ -14,13 +14,13 @@
           <a-list-item>
             <a-list-item-meta :title="item.name">
               <template #description>
-                <span style="color: red;display: block">HKD {{ $store.getters.calcPrice(item) }}</span>
+                <span style="color: red;display: block">NT$ {{ $store.getters.calcPrice(item) }}</span>
                 <span style="color: gray;display: block" v-for="custom in item.custom" :key="custom.id">
                - {{ custom.name }}
             </span>
               </template>
               <template #avatar v-if="item.img">
-                <a-image :src="item.img" alt="img" class="foodImage"/>
+                <!-- <a-image :src="item.img" alt="img" class="foodImage"/> -->
               </template>
             </a-list-item-meta>
           </a-list-item>
@@ -28,24 +28,33 @@
       </a-list>
       <div class="payment-box">
         <div class="route">
-          支付方式
+          個人資訊
         </div>
-        <a-radio-group v-model:value="payment" class="payment">
+        <div class="payment">
+          <a-input placeholder="姓名" v-model:value="name" style="margin-bottom: 10px"/>
+          <a-input placeholder="手機" v-model:value="phone" style="margin-bottom: 10px"/>
+          <a-input placeholder="地址" v-model:value="address" style="margin-bottom: 10px"/>
+        </div>
+        <!-- <a-radio-group v-model:value="payment" class="payment">
           <a-radio :style="{display: 'flex', height: '30px', lineHeight: '30px'}"
                    v-for="(paymentName, key) in paymentMethod" :value="key + 1">
             {{ paymentName }}
           </a-radio>
-        </a-radio-group>
+        </a-radio-group> -->
       </div>
     </div>
     <div class="fadeBottom"></div>
     <div id="bottom">
       <div class="count">
-        <span class="text">支付方式: </span>
-        <span class="payment">{{ payment === null ? "--" : paymentMethod[payment - 1] }}</span>
+        <span class="text">價格: </span>
+        <span class="payment">
+          NT${{ $store.getters.getTotal }}
+        </span>
       </div>
       <div class="button">
-          <a-button type="primary" shape="round" :disabled="!payment" @click="paymentEvent()">確認付款</a-button>
+          <a-button type="primary" shape="round" :disabled="
+          !name || !phone || !address || $store.getters.getAllFood.length === 0
+          " @click="paymentEvent()">確認下單</a-button>
       </div>
     </div>
   </div>
@@ -60,13 +69,37 @@ export default {
   data() {
     return {
       payment: null,
-      paymentMethod: require("../../app/config.json").shop.payment
+      paymentMethod: require("../../app/config.json").shop.payment,
+      name: "",
+      phone: "",
+      address: ""
     };
   },
   methods: {
     paymentEvent() {
+      // 校驗台灣手機號碼
+      // if (!this.phone.match(/^09\d{8}$/)) {
+      //   message.error("請輸入正確的手機號碼");
+      //   return;
+      // }
       this.$root.startLoading(() => {
-        message.success("付款成功");
+        fetch(
+          'https://linebot.sleepingbed.top/order',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: this.name,
+              phone: this.phone,
+              address: this.address,
+              food: this.$store.getters.getAllFood,
+              user: this.$store.state.user
+            })
+          }
+        )
+        message.success("成功");
         this.$store.commit("cleanCart");
         this.$router.push("/");
       });
@@ -112,7 +145,7 @@ export default {
       margin-bottom: 20px;
 
       .payment {
-        margin: 10px 0;
+        margin: 10px 15%;
       }
     }
   }
@@ -142,6 +175,7 @@ export default {
       .payment {
         font-size: 20px;
         font-weight: bold;
+        margin: 0 15%;
       }
     }
 

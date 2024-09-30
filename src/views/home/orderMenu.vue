@@ -1,18 +1,24 @@
 <template>
   <div id="menu">
-    <div class="block" v-for="(list, key) in $store.state.menu" :id="`foodItem_${key+1}`">
+    <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" :id="`foodItem_${key+1}`">
       <span class="title">
-        {{ list.name }}
+        {{ key }}
       </span>
       <a-list class="itemList">
-        <a-list-item v-for="item in list.items" :key="item.id">
+        <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category===key">
           <a-list-item-meta :title="item.name">
             <template #description>
-              <span style="color: red">HKD {{ item.price }}</span>
+              <a-space>
+                <div class="priceGroup">
+                  <span style="color: red">NT$ {{ item.selling_price }}</span>
+                  <span>/{{ item.unit }}</span>
+                </div>
+                <span>庫存 {{ item.stock }}{{ item.unit }}</span>
+              </a-space>
             </template>
-            <template #avatar v-if="item.img">
+            <!-- <template #avatar v-if="item.img">
               <a-image :src="item.img" alt="img" class="foodImage"/>
-            </template>
+            </template> -->
           </a-list-item-meta>
           <a-space>
             <a-button type="primary" v-if="$store.getters.findCart(item.id) > 0" @click="$store.commit('removeFood', [item.id])"
@@ -33,7 +39,7 @@
         加入購物車
       </template>
       <div class="foodInfo">
-        <img :src="viewTarget.img" alt="img" class="foodImage">
+        <!-- <img :src="viewTarget.img" alt="img" class="foodImage"> -->
         <div class="foodInfoText">
           <span class="foodName">{{ viewTarget.name }}</span>
         </div>
@@ -45,14 +51,14 @@
                     :value="option.id" shape="round" class="typeItem" @click="option.checked = !option.checked">
             {{ option.name }}
             <span class="customPrice">
-            {{ option.price ? `&nbsp;\$${option.price}` : "" }}
+            {{ option.selling_price ? `&nbsp;\$${option.selling_price}` : "" }}
             </span>
           </a-button>
         </div>
       </div>
       <template #footer>
         <div class="price" style="float: left">
-          <span class="priceText">HKD {{ getPrice() }}</span>
+          <span class="priceText">NT$ {{ getPrice() }}</span>
         </div>
         <a-space>
           <a-button type="primary" v-if="$store.getters.findCart(viewTarget.id) > 0" @click="$store.commit('removeFood', [viewTarget.id])"
@@ -93,32 +99,33 @@ export default {
     viewFood(foodid) {
       this.view = true;
       this.viewTarget = this.$store.getters.findFood(foodid);
+      console.log(this.viewTarget);
       this.viewTarget = JSON.parse(JSON.stringify(this.viewTarget));
-      const childList = this.$store.getters.findType(foodid).superChild || [];
+      // const childList = this.$store.getters.findType(foodid).superChild || [];
       // get all viewCustom[].items
-      this.viewCustom.child?.forEach(type => {
-        type.items.forEach(item => {
-          item.checked = item.default || false;
-        })
-      });
+      // this.viewCustom.child?.forEach(type => {
+      //   type.items.forEach(item => {
+      //     item.checked = item.default || false;
+      //   })
+      // });
       // merge this.viewTarget.child and childList
       // get all viewTarget.child
-      this.viewTarget.child?.forEach(type => {
-        childList.push(type);
-        type.items.forEach(item => {
-          item.checked = item.default || false;
-        })
-      })
+      // this.viewTarget.child?.forEach(type => {
+      //   childList.push(type);
+      //   type.items.forEach(item => {
+      //     item.checked = item.default || false;
+      //   })
+      // })
       // deep copy
-      this.viewCustom = JSON.parse(JSON.stringify(childList));
-      console.log(this.viewCustom);
+      // this.viewCustom = JSON.parse(JSON.stringify(childList));
+      // console.log(this.viewCustom);
     },
     getPrice() {
-      let price = this.viewTarget.price;
+      let price = this.viewTarget.selling_price;
       this.viewCustom.forEach(type => {
         type.items.forEach(item => {
           if (item.checked) {
-            price += item.price;
+            price += item.selling_price;
           }
         })
       });
