@@ -39,7 +39,6 @@ export default {
   methods: {
     startLoading(callback) {
       this.loading = true;
-      // rand 4000~6000
       setTimeout(() => {
         this.loading = false;
         callback();

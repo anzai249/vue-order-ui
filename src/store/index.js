@@ -21,7 +21,6 @@ import {listenCart} from "./plugin.js";
 fetch("https://linebot.sleepingbed.top/api/menu/",
   {method: "GET", headers: {"Content-Type": "application/json"}}
 ).then(res => res.json()).then(res => {
-  console.log(res)
   store.state.menu = res
 });
 
@@ -124,7 +123,6 @@ const store = createStore({
     getAllFood(state) {
       // get cart
       let cart = state.cart;
-      console.log("cart", cart);
       let foodList = []
       cart.forEach((item) => {
         let key = 0
@@ -138,7 +136,6 @@ const store = createStore({
           key++;
         }
       })
-      console.log("foodList", foodList);
       return foodList;
     },
     calcPrice() {

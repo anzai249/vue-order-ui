@@ -101,10 +101,19 @@ export default {
                 "items": this.$store.getters.getAllFood
             })
           }
-        )
-        message.success("成功");
-        this.$store.commit("cleanCart");
-        window.close();
+        ).then((res) => {
+          // 400
+          if (res.status === 400) {
+            message.error("錯誤的請求，请返回LINE重新點餐");
+            return;
+          } else if (res.status === 500) {
+            message.error("伺服器錯誤，請稍後再試");
+            return;
+          } else {
+            message.success("成功！请退回LINE查看訂單");
+            this.$store.commit("cleanCart");
+          }
+        });
       });
     }
   },

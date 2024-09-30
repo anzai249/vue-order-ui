@@ -91,7 +91,6 @@ export default {
   },
   methods: {
     orderFood(foodid) {
-      console.log(this.$store.state.cart);
       let viewCustom = JSON.parse(JSON.stringify(this.viewCustom));
       this.$store.commit("orderFood", [foodid, viewCustom]);
       this.$forceUpdate()
@@ -99,7 +98,6 @@ export default {
     viewFood(foodid) {
       this.view = true;
       this.viewTarget = this.$store.getters.findFood(foodid);
-      console.log(this.viewTarget);
       this.viewTarget = JSON.parse(JSON.stringify(this.viewTarget));
       // const childList = this.$store.getters.findType(foodid).superChild || [];
       // get all viewCustom[].items
