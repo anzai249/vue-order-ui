@@ -32,7 +32,17 @@ if (!params.get("userid")) {
 
 const store = createStore({
   state: {
-    "menu": [],
+    "menu": [
+      {
+        "category": "水菜",
+        "id": "loading0-load-load-load-loadingload0",
+        "name": "載入中……",
+        "purchase_price": 0,
+        "selling_price": 0,
+        "stock": 0,
+        "unit": "kg"
+      },
+    ],
     "cart": [],
     "user": params.get("userid")
   },

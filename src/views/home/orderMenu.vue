@@ -35,7 +35,7 @@
                 <MinusOutlined style="font-size: 11px"/>
               </template>
             </a-button>
-            <a-button type="primary" @click="viewFood(item.id)" shape="round">
+            <a-button type="primary" @click="viewFood(item.id)" shape="round" v-if="item.id!=='loading0-load-load-load-loadingload0'">
               {{ $store.getters.findCart(item.id) > 0 ? $store.getters.findCart(item.id) : "加入購物車" }}
             </a-button>
           </a-space>
