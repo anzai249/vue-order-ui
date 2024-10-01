@@ -6,7 +6,7 @@
       </router-link>
       訂單
       <span style="float: right; font-size: medium;">
-        注意：本人未確認訂單將在翌日 0 時自動取消
+        注意：本人未確認訂單將在次日 0 時自動取消
       </span>
     </span>
     <a-card style="width: 100%" v-for="item in orders">
