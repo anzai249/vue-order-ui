@@ -77,11 +77,11 @@ export default {
   },
   methods: {
     paymentEvent() {
-      // 校驗台灣手機號碼
-      // if (!this.phone.match(/^09\d{8}$/)) {
-      //   message.error("請輸入正確的手機號碼");
-      //   return;
-      // }
+      // 校驗9位數字
+      if (!/^\d{9}$/.test(this.phone)) {
+        message.error("手機號碼格式錯誤");
+        return;
+      }
       this.$root.startLoading(() => {
         fetch(
           'https://linebot.sleepingbed.top/order',
