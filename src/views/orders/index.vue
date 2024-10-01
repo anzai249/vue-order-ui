@@ -51,6 +51,7 @@ export default {
         0: { text: "本人未確認", color: "red" },
         1: { text: "商家未確認", color: "" },
         2: { text: "準備送貨", color: "" },
+        7: { text: "已遭拒絕", color: "red" },
         8: { text: "已取消", color: "grey" },
         9: { text: "已失效", color: "grey" },
         10: { text: "完成", color: "green" },
