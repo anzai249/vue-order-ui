@@ -5,7 +5,7 @@
         <left-outlined style="margin-right: 5px" />
       </router-link>
       訂單
-      <span style="float: rightl; font-size: medium;">
+      <span style="float: right; font-size: medium;">
         注意：本人未確認訂單將在翌日 0 時自動取消
       </span>
     </span>
