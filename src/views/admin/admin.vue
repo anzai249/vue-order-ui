@@ -198,14 +198,14 @@ export default {
     PlusOutlined,
   },
   created() {
-    if (!sessionStorage.getItem("adminToken")) {
+    if (!sessionStorage.getItem("adminAuth")) {
       this.$router.push("/login");
       return;
     }
     // fetch menu
     fetch("https://linebot.sleepingbed.top/api/menu/", {
         headers: {
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
       method: "GET",
       ContentType: "application/json",
@@ -218,7 +218,7 @@ export default {
     // fetch orders
     fetch("https://linebot.sleepingbed.top/api/orders/orders", {
         headers: {
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
       method: "GET",
       ContentType: "application/json",
@@ -270,7 +270,7 @@ export default {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
         body: JSON.stringify(newData),
       }).then((res) => {
@@ -290,7 +290,7 @@ export default {
       fetch(`https://linebot.sleepingbed.top/api/menu/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
       }).then((res) => {
         if (res.status !== 200) {
@@ -318,7 +318,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
         body: JSON.stringify({
           ...this.newItem,
@@ -343,7 +343,7 @@ export default {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
         body: JSON.stringify({
           status: 2,
@@ -362,7 +362,7 @@ export default {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
         body: JSON.stringify({
           status: 7,
@@ -381,7 +381,7 @@ export default {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminToken"),
+          Authorization: sessionStorage.getItem("adminAuth"),
         },
         body: JSON.stringify({
           status: 10,

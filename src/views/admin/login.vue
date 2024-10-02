@@ -29,7 +29,7 @@ export default {
         };
     },
     created() {
-        if (sessionStorage.getItem('adminToken')) {
+        if (sessionStorage.getItem('adminAuth')) {
             this.$router.push('/admin');
         }
     },
@@ -45,7 +45,7 @@ export default {
                 console.log(res);
                 if (res.ok) {
                     // store token
-                    sessionStorage.setItem('adminToken', res.headers.get('Authorization'));
+                    sessionStorage.setItem('adminAuth', adminAuth);
                     this.$router.push('/admin');
                 } else {
                     message.error("登入失敗");
