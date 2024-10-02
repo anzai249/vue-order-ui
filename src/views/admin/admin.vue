@@ -334,7 +334,7 @@ export default {
           return res.json();
         })
         .then((data) => {
-          this.menu.push(data);
+          this.menu.push(this.newItem);
           this.edit(data.item_id);
         });
     },
