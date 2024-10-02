@@ -39,7 +39,7 @@ export default {
         handleSubmit() {
             // auth linebot.sleepingbed.top/users/admin/login
             let adminAuth = 'Basic ' + btoa(this.form.username + ':' + this.form.password);
-            fetch('https://linebot.sleepingbed.top/users/admin/login', {
+            fetch('https://linebot.sleepingbed.top/api/users/admin/login', {
                 method: 'POST',
                 headers: {
                     'Authorization': adminAuth
