@@ -325,7 +325,7 @@ export default {
         }),
       })
         .then((res) => {
-          if (res.status !== 200) {
+          if (res.status !== 201) {
             message.error("新增失敗");
             return;
           } else {
@@ -335,7 +335,7 @@ export default {
         })
         .then((data) => {
           this.menu.push(data);
-          this.edit(data.id);
+          this.edit(data.item_id);
         });
     },
     confirmOrder(record) {
