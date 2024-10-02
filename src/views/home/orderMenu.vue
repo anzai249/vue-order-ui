@@ -13,7 +13,7 @@
         {{ key }}
       </span>
       <a-list class="itemList">
-        <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category===key">
+        <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category===key && !!item.stock">
           <a-list-item-meta :title="item.name">
             <template #description>
               <a-space>

@@ -48,6 +48,13 @@ const store = createStore({
   },
   mutations: {
     orderFood(state, [foodid, custom]) {
+      // if out of stock
+      let found = state.menu.map((item) => item).flat().find((item) => item.id === foodid);
+      // if more than stock
+      if (found.stock < state.cart.filter((item) => item.id === foodid).length + 1) {
+        message.error("超過庫存")
+        return
+      }
       // custom edit
       const customList = []
       custom.forEach(list => {
@@ -58,7 +65,7 @@ const store = createStore({
         })
       })
       // found in cart
-      let found = state.cart.find((item) => item.id === foodid);
+      found = state.cart.find((item) => item.id === foodid);
       if (found) {
         found.count++;
         found.custom.push(customList)
