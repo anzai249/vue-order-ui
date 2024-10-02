@@ -314,7 +314,7 @@ export default {
         message.error("請填寫完整");
         return;
       }
-      fetch("https://linebot.sleepingbed.top/api/menu", {
+      fetch("https://linebot.sleepingbed.top/api/menu/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
