@@ -203,7 +203,7 @@ export default {
       return;
     }
     // fetch menu
-    fetch("https://linebot.sleepingbed.top/api/menu", {
+    fetch("https://linebot.sleepingbed.top/api/menu/", {
         headers: {
           Authorization: sessionStorage.getItem("adminToken"),
         },

@@ -4,10 +4,10 @@
             <a-card title="管理員登入">
                 <a-form @submit.prevent="handleSubmit">
                     <a-form-item>
-                        <a-input v-model="form.username" placeholder="Username" />
+                        <a-input v-model:value="username" placeholder="Username" />
                     </a-form-item>
                     <a-form-item>
-                        <a-input v-model="form.password" type="password" placeholder="Password" />
+                        <a-input v-model:value="password" type="password" placeholder="Password" />
                     </a-form-item>
                     <a-form-item>
                         <a-button type="primary" html-type="submit" block>登入</a-button>
@@ -24,10 +24,8 @@ import {message} from "ant-design-vue";
 export default {
     data() {
         return {
-            form: {
-                username: '',
-                password: ''
-            }
+            username: '',
+            password: ''
         };
     },
     created() {
@@ -37,14 +35,14 @@ export default {
     },
     methods: {
         handleSubmit() {
-            // auth linebot.sleepingbed.top/users/admin/login
-            let adminAuth = 'Basic ' + btoa(this.form.username + ':' + this.form.password);
+            let adminAuth = 'Basic ' + btoa(this.username + ':' + this.password);
             fetch('https://linebot.sleepingbed.top/api/users/admin/login', {
                 method: 'POST',
                 headers: {
                     'Authorization': adminAuth
                 }
             }).then(res => {
+                console.log(res);
                 if (res.ok) {
                     // store token
                     sessionStorage.setItem('adminToken', res.headers.get('Authorization'));
