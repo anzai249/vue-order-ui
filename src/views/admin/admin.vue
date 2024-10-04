@@ -262,6 +262,19 @@ export default {
       this.editableData[id] = { ...this.menu.find((item) => item.id === id) };
     },
     save(id) {
+      if (
+        isNaN(this.editableData[id].purchase_price) ||
+        isNaN(this.editableData[id].selling_price) ||
+        isNaN(this.editableData[id].stock) ||
+        !this.editableData[id].name ||
+        !this.editableData[id].purchase_price ||
+        !this.editableData[id].selling_price ||
+        !this.editableData[id].stock ||
+        !this.editableData[id].unit
+      ) {
+        message.error("請填寫完整，價格和庫存必須是數字");
+        return;
+      }
       const newData = this.editableData[id];
       const index = this.menu.findIndex((item) => item.id === id);
       const item = this.menu[index];
@@ -312,6 +325,15 @@ export default {
         !this.newItem.unit
       ) {
         message.error("請填寫完整");
+        return;
+      }
+      // price stock must be a number
+      if (
+        isNaN(this.newItem.purchase_price) ||
+        isNaN(this.newItem.selling_price) ||
+        isNaN(this.newItem.stock)
+      ) {
+        message.error("價格和庫存必須是數字");
         return;
       }
       fetch("https://linebot.sleepingbed.top/api/menu/", {
