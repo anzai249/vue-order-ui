@@ -75,6 +75,11 @@ export default {
       address: ""
     };
   },
+  mounted() {
+    this.name = localStorage.getItem("name") || "";
+    this.phone = localStorage.getItem("phone") || "";
+    this.address = localStorage.getItem("address") || "";
+  },
   methods: {
     paymentEvent() {
       // 校驗台灣電話
@@ -110,6 +115,9 @@ export default {
             message.error("伺服器錯誤，請稍後再試");
             return;
           } else {
+            localStorage.setItem("name", this.name);
+            localStorage.setItem("phone", this.phone);
+            localStorage.setItem("address", this.address);
             message.success("成功！请退回LINE查看訂單");
             this.$store.commit("cleanCart");
           }
