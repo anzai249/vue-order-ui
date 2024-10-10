@@ -129,6 +129,15 @@
       <a-row :span="12">
         <div class="section">
           <h2>訂單管理</h2>
+          <a-row>
+            <a-col :span="12">
+              <a-statistic style="float: right;"
+                title="筛选后用戶總消費（僅已完成）/NT$"
+                :value="extra.currentDataSource.filter((item) => item.status.text === '完成').reduce((acc, cur) => acc + cur.total_price, 0)"
+                precision="2"
+              />
+            </a-col>
+          </a-row>
           <a-table
             :dataSource="orders"
             :columns="orderColumns"
@@ -136,6 +145,7 @@
               (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
             "
             class="ant-table-striped"
+            @change="onChange"
           >
             <template #bodyCell="{ column, text, record }">
               <template v-if="column.dataIndex === 'status'">
@@ -255,6 +265,13 @@ export default {
             item.items = items;
         });
         this.orders = data;
+        this.orderColumns[3].filters = [
+          ...new Set(data.map((item) => item.tel)),
+        ].map((tel) => ({ text: tel, value: tel }));
+        this.orderColumns[3].onFilter = (value, record) => {
+          return record.tel.startsWith(value);
+        },
+        this.orderColumns[3].filterSearch = true;
       });
   },
   methods: {
@@ -348,7 +365,7 @@ export default {
       })
         .then((res) => {
           if (res.status !== 201) {
-            message.error("新增失敗");
+            message.error(res.error);
             return;
           } else {
             message.success("新增成功");
@@ -417,12 +434,17 @@ export default {
         record.status = { text: "完成", color: "green" };
       });
     },
+    onChange(pagination, filters, sorter, extra) {
+      this.extra = extra;
+    },
   },
   data() {
     return {
       menu: [],
       orders: [],
       editableData: {},
+      filteredPhoneValue: "",
+      extra: {},
       newItem: {
         name: "",
         purchase_price: null,
