@@ -46,7 +46,7 @@ export default {
                 if (res.ok) {
                     // store token
                     sessionStorage.setItem('adminAuth', adminAuth);
-                    this.$router.push('/admin');
+                    this.$router.push('/admin?user=clerkAdmin');
                 } else {
                     message.error("登入失敗");
                 }
