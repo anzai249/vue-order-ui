@@ -132,7 +132,7 @@
       <a-row :span="12">
         <div class="section">
           <h2>訂單管理</h2>
-          <a-row>
+          <a-row v-if="!!extra.currentDataSource">
             <a-col :span="12">
               <a-statistic style="float: right;"
                 title="筛选后用戶總消費（僅已完成）/NT$"
@@ -447,7 +447,7 @@ export default {
       orders: [],
       editableData: {},
       filteredPhoneValue: "",
-      extra: {},
+      extra: {filters:{}},
       newItem: {
         name: "",
         purchase_price: null,
