@@ -216,7 +216,7 @@ export default {
       return;
     }
     // fetch menu
-    fetch("https://linebot.sleepingbed.top/api/menu/", {
+    fetch("https://linebot.otakux.org/api/menu/", {
         headers: {
           Authorization: sessionStorage.getItem("adminAuth"),
         },
@@ -229,7 +229,7 @@ export default {
       });
 
     // fetch orders
-    fetch("https://linebot.sleepingbed.top/api/orders/orders", {
+    fetch("https://linebot.otakux.org/api/orders/orders", {
         headers: {
           Authorization: sessionStorage.getItem("adminAuth"),
         },
@@ -299,7 +299,7 @@ export default {
       const index = this.menu.findIndex((item) => item.id === id);
       const item = this.menu[index];
       this.menu.splice(index, 1, { ...item, ...newData });
-      fetch(`https://linebot.sleepingbed.top/api/menu/${id}`, {
+      fetch(`https://linebot.otakux.org/api/menu/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -320,7 +320,7 @@ export default {
       delete this.editableData[id];
     },
     delete_item(id) {
-      fetch(`https://linebot.sleepingbed.top/api/menu/${id}`, {
+      fetch(`https://linebot.otakux.org/api/menu/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: sessionStorage.getItem("adminAuth"),
@@ -356,7 +356,7 @@ export default {
         message.error("價格和庫存必須是數字");
         return;
       }
-      fetch("https://linebot.sleepingbed.top/api/menu/", {
+      fetch("https://linebot.otakux.org/api/menu/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -381,7 +381,7 @@ export default {
         });
     },
     confirmOrder(record) {
-      fetch(`https://linebot.sleepingbed.top/api/orders/orders/${record.order_id}/status`, {
+      fetch(`https://linebot.otakux.org/api/orders/orders/${record.order_id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -400,7 +400,7 @@ export default {
       });
     },
     rejectOrder(record) {
-      fetch(`https://linebot.sleepingbed.top/api/orders/orders/${record.order_id}/status`, {
+      fetch(`https://linebot.otakux.org/api/orders/orders/${record.order_id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -419,7 +419,7 @@ export default {
       });
     },
     completeOrder(record) {
-      fetch(`https://linebot.sleepingbed.top/api/orders/orders/${record.order_id}/status`, {
+      fetch(`https://linebot.otakux.org/api/orders/orders/${record.order_id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

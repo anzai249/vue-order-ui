@@ -95,7 +95,7 @@ export default {
       if (sessionStorage.getItem('adminAuth')) {
         this.$root.startLoading(() => {
           fetch(
-            'https://linebot.sleepingbed.top/order-admin',
+            'https://linebot.otakux.org/order-admin',
             {
               method: 'POST',
               headers: {
@@ -134,7 +134,7 @@ export default {
       }
       this.$root.startLoading(() => {
         fetch(
-          'https://linebot.sleepingbed.top/order',
+          'https://linebot.otakux.org/order',
           {
             method: 'POST',
             headers: {

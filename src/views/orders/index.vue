@@ -67,7 +67,7 @@ export default {
     CloseOutlined
   },
   created() {
-    fetch("https://linebot.sleepingbed.top/api/orders/users/"+this.$store.state.user+"/orders", {
+    fetch("https://linebot.otakux.org/api/orders/users/"+this.$store.state.user+"/orders", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

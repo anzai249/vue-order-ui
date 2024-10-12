@@ -18,7 +18,7 @@ import {listenCart} from "./plugin.js";
 // })
 
 
-fetch("https://linebot.sleepingbed.top/api/menu/",
+fetch("https://linebot.otakux.org/api/menu/",
   {method: "GET", headers: {"Content-Type": "application/json"}}
 ).then(res => res.json()).then(res => {
   store.state.menu = res
