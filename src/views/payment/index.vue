@@ -95,7 +95,7 @@ export default {
       if (sessionStorage.getItem('adminAuth')) {
         this.$root.startLoading(() => {
           fetch(
-            'https://linebot.sleepingbed.top/order',
+            'https://linebot.sleepingbed.top/order-admin',
             {
               method: 'POST',
               headers: {
@@ -109,7 +109,7 @@ export default {
                       "phone": this.phone,
                       "address": this.address
                   },
-                  "user": this.$store.state.user,
+                  "user": "clerkAdmin",
                   "items": this.$store.getters.getAllFood
               })
             }
