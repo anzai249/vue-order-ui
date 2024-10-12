@@ -79,12 +79,57 @@ export default {
     this.name = localStorage.getItem("name") || "";
     this.phone = localStorage.getItem("phone") || "";
     this.address = localStorage.getItem("address") || "";
+    if(sessionStorage.getItem('adminAuth')) {
+      this.name = "到店消費";
+      this.phone = "0900000000";
+      this.address = "到店消費";
+    }
   },
   methods: {
     paymentEvent() {
       // 校驗台灣電話
       if (!/^09\d{8}$/.test(this.phone)) {
         message.error("請輸入正確的手機號碼");
+        return;
+      }
+      if (sessionStorage.getItem('adminAuth')) {
+        this.$root.startLoading(() => {
+          fetch(
+            'https://linebot.sleepingbed.top/order',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionStorage.getItem('adminAuth')
+              },
+              body: JSON.stringify(
+                {
+                  "customer": {
+                      "name": this.name,
+                      "phone": this.phone,
+                      "address": this.address
+                  },
+                  "user": this.$store.state.user,
+                  "items": this.$store.getters.getAllFood
+              })
+            }
+          ).then((res) => {
+            // 400
+            if (res.status === 400) {
+              message.error("錯誤的請求，请返回LINE重新點餐");
+              return;
+            } else if (res.status === 500) {
+              message.error("伺服器錯誤，請稍後再試");
+              return;
+            } else {
+              localStorage.setItem("name", this.name);
+              localStorage.setItem("phone", this.phone);
+              localStorage.setItem("address", this.address);
+              message.success("點餐成功！");
+              this.$store.commit("cleanCart");
+            }
+          });
+        });
         return;
       }
       this.$root.startLoading(() => {

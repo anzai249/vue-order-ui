@@ -1,5 +1,8 @@
 <template>
   <div class="admin-page">
+    <a-button @click="$router.push('/')" style="margin-bottom: 20px">
+      到店消費
+    </a-button>
     <a-col>
       <a-row :span="12">
         <div class="section">
