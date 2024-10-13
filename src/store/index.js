@@ -51,7 +51,7 @@ const store = createStore({
       // if out of stock
       let found = state.menu.map((item) => item).flat().find((item) => item.id === foodid);
       // if count more than stock
-      if (found.stock < state.cart.map((item) => item.count).reduce((a, b) => a + b, 0) + 1) {
+      if (found.stock < state.cart.find((item) => item.id === foodid)?.count + 1) {
         message.error("超出庫存")
         return
       }
