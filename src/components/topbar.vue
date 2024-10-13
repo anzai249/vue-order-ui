@@ -1,27 +1,36 @@
 <template>
   <div id="topbar">
     <div class="left">
-      <menu-unfold-outlined class="icon" @click="openDraw"/>
+      <menu-unfold-outlined class="icon" @click="openDraw" />
       <a-drawer :width="280" title="分類" :visible="drawerVisible" @close="drawerVisible = !1" :closable="false"
-                placement="left">
+        placement="left">
         <a-menu mode="inline">
           <!-- <a-sub-menu>
             <template #title>
               分類
             </template>
-            <a-menu-item v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" :key="key">
-              <router-link to="/" @click="scrollTo('foodItem_'+key)">{{ key }}</router-link>
-            </a-menu-item>
-          </a-sub-menu> -->
+<a-menu-item v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" :key="key">
+  <router-link to="/" @click="scrollTo('foodItem_'+key)">{{ key }}</router-link>
+</a-menu-item>
+</a-sub-menu> -->
           <a-menu-item key="1">
-            <router-link to="/order">我的訂單</router-link>
+            <router-link :to="{
+              name: 'Order',
+              query: { userid: this.$store.state.user }
+            }">我的訂單</router-link>
           </a-menu-item>
           <a-menu-item key="4">
-            <router-link to="/checkout">購物車</router-link>
+            <router-link :to="{
+              name: 'Checkout',
+              query: { userid: this.$store.state.user }
+            }">購物車</router-link>
           </a-menu-item>
         </a-menu>
       </a-drawer>
-      <router-link to="/">
+      <router-link :to="{
+        name: 'Home',
+        query: { userid: this.$store.state.user }
+      }">
         <a class="logo">
           <img class="logo" :src="config.shop.icon" alt="Logo" v-if="config.shop.icon">
           <span class="logo" v-else>{{ config.shop.name }}</span>
@@ -29,12 +38,18 @@
       </router-link>
     </div>
     <div class="right">
-      <router-link to="/order">
-        <FileSearchOutlined class="icon" /> 
+      <router-link :to="{
+        name: 'Order',
+        query: { userid: this.$store.state.user }
+      }">
+        <FileSearchOutlined class="icon" />
       </router-link>
-      <router-link to="/checkout">
+      <router-link :to="{
+        name: 'Checkout',
+        query: { userid: this.$store.state.user }
+      }">
         <a-badge :count="$store.getters.foodCount">
-          <shopping-cart-outlined class="icon"/>
+          <shopping-cart-outlined class="icon" />
         </a-badge>
       </router-link>
     </div>
@@ -42,7 +57,7 @@
 </template>
 
 <script>
-import {MenuUnfoldOutlined, ShoppingCartOutlined, FileSearchOutlined} from '@ant-design/icons-vue'
+import { MenuUnfoldOutlined, ShoppingCartOutlined, FileSearchOutlined } from '@ant-design/icons-vue'
 // import {selecter as $} from "jsfast"
 
 export default {
@@ -85,19 +100,20 @@ export default {
   width: 100%;
   z-index: 10;
 
-  .left, .right {
+  .left,
+  .right {
     float: left;
     display: flex;
     align-items: center;
     height: 100%;
     padding: 20px;
 
-    &.left > * {
+    &.left>* {
       margin-left: 8px;
       padding: 0 4px;
     }
 
-    &.right > * {
+    &.right>* {
       margin-right: 8px;
       padding: 0 4px;
     }
@@ -116,7 +132,7 @@ export default {
       cursor: pointer;
     }
 
-    ~ .right {
+    ~.right {
       float: right;
     }
   }

@@ -1,7 +1,10 @@
 <template>
   <div id="orderList">
     <span class="title">
-      <router-link to="/">
+      <router-link :to="{
+        name: 'Home',
+        query: { userid: this.$store.state.user }
+      }">
         <left-outlined style="margin-right: 5px"/>
       </router-link>
       購物車

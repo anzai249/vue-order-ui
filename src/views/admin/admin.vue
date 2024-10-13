@@ -135,7 +135,7 @@
           <a-row v-if="!!extra.currentDataSource">
             <a-col :span="12">
               <a-statistic style="float: right;"
-                title="筛选后用戶總消費（僅已完成）/NT$"
+                title="篩選後用戶總消費（僅已完成）/NT$"
                 :value="extra.currentDataSource.filter((item) => item.status.text === '完成').reduce((acc, cur) => acc + cur.total_price, 0)"
                 precision="2"
               />

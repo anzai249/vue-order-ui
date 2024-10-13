@@ -5,7 +5,10 @@
       <span class="price" style="color: red">NT$ {{ $store.getters.getTotal }}</span>
     </div>
     <div class="button">
-      <router-link to="/checkout">
+      <router-link :to="{
+        name: 'Checkout',
+        query: { userid: this.$store.state.user }
+      }">
         <a-button type="primary" shape="round">查看購物車</a-button>
       </router-link>
     </div>

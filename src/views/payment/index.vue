@@ -2,7 +2,10 @@
   <div id="payment">
     <div class="main">
       <div class="route">
-        <router-link to="/">
+        <router-link :to="{
+          name: 'Home',
+          query: { userid: this.$store.state.user }
+        }">
           <left-outlined style="margin-right: 5px"/>
         </router-link>
         購物車
