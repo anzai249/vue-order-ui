@@ -39,7 +39,7 @@ const store = createStore({
         "name": "載入中……",
         "purchase_price": 0,
         "selling_price": 0,
-        "stock": 0,
+        "stock": '?',
         "unit": "kg"
       },
     ],
