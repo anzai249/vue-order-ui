@@ -66,6 +66,7 @@
 <script>
 import {LeftOutlined} from "@ant-design/icons-vue";
 import {message} from "ant-design-vue";
+import liff from '@line/liff'
 
 export default {
   name: "index",

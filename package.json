@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@line/liff": "^2.24.0",
     "ant-design-vue": "^3.2.15",
     "jsfast": "1.0.0-beta.20",
     "less": "^4.1.3",
