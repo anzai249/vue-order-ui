@@ -267,6 +267,8 @@ export default {
             });
             item.items = items;
         });
+        // 逆序
+        data = data.reverse();
         this.orders = data;
         this.orderColumns[3].filters = [
           ...new Set(data.map((item) => item.tel)),
