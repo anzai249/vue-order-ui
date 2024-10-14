@@ -168,9 +168,7 @@ export default {
             localStorage.setItem("address", this.address);
             message.success("成功！请退回LINE查看訂單");
             this.$store.commit("cleanCart");
-            window.opener = null;
-            window.open("","_self");
-            window.close();
+            liff.closeWindow();
           }
         });
       });
