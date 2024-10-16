@@ -480,7 +480,6 @@ export default {
           key: "name",
           scopedSlots: { customRender: "name" },
           width: "10%",
-          fixed: 'left',
         },
         {
           title: "送貨地址",
