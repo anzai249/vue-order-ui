@@ -472,6 +472,7 @@ export default {
           key: "order_id",
           scopedSlots: { customRender: "order_id" },
           width: "10%",
+          fixed: 'left',
         },
         {
           title: "姓名",
@@ -479,6 +480,7 @@ export default {
           key: "name",
           scopedSlots: { customRender: "name" },
           width: "10%",
+          fixed: 'left',
         },
         {
           title: "送貨地址",
@@ -521,6 +523,7 @@ export default {
           key: "action",
           scopedSlots: { customRender: "action" },
           width: "10%",
+          fixed: 'right',
         },
       ],
       columns: [
