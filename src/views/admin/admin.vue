@@ -277,6 +277,13 @@ export default {
           return record.tel.startsWith(value);
         },
         this.orderColumns[3].filterSearch = true;
+        this.orderColumns[0].filters = [
+          ...new Set(data.map((item) => item.order_id)),
+        ].map((order_id) => ({ text: order_id, value: order_id }));
+        this.orderColumns[0].onFilter = (value, record) => {
+          return record.order_id.startsWith(value);
+        },
+        this.orderColumns[0].filterSearch = true;
       });
   },
   methods: {
