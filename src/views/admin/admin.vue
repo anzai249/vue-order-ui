@@ -1,7 +1,7 @@
 <template>
   <div class="admin-page">
-    <a-button @click="$router.push('/')" style="margin-bottom: 20px">
-      到店消費
+    <a-button @click="warningModal=true" style="margin-bottom: 20px" danger >
+      初始化資料庫
     </a-button>
     <a-col>
       <a-row :span="12">
@@ -121,6 +121,9 @@
         </div>
       </a-row>
     </a-col>
+    <a-modal v-model:visible="warningModal" title="初始化資料庫" ok-text="確認初始化" cancel-text="取消" @ok="removeDB()">
+      <p>初始化資料庫是一個危險操作，請一定要在資料庫損壞或不可逆操作時進行。</p>
+    </a-modal>
   </div>
 </template>
 
@@ -138,7 +141,7 @@ export default {
   },
   methods: {
     edit(id) {
-      this.editableData[id] = { ...this.menu.find((item) => item.id === id) };
+      this.editableData[id] = { ...this.$store.state.menu.find((item) => item.id === id) };
     },
     save(id) {
       if (
@@ -150,37 +153,19 @@ export default {
         return;
       }
       const newData = this.editableData[id];
-      const index = this.menu.findIndex((item) => item.id === id);
-      const item = this.menu[index];
-      this.menu.splice(index, 1, { ...item, ...newData });
-      // edit item in ./veg_order.db
-      initSqlJs().then(SQL => {
-        const db = this.$store.state.db;
-        db.run(`UPDATE menu SET name = '${newData.name}', purchase_price = 0, selling_price = 0, stock = 999, unit = '${newData.unit}', category = '${newData.category}' WHERE id = ${id}`);
-        const data = db.export();
-        const buffer = new ArrayBuffer(data.length);
-        const view = new Uint8Array(buffer);
-        for (let i = 0; i < data.length; i++) {
-          view[i] = data[i];
-        }
-      });
+      const index = this.$store.state.menu.findIndex((item) => item.id === id);
+      const item = this.$store.state.menu[index];
+      this.$store.state.menu.splice(index, 1, { ...item, ...newData });
+      this.$store.commit("updateMenuItem", newData);
+      message.success("保存成功");
       delete this.editableData[id];
     },
     cancel(id) {
       delete this.editableData[id];
     },
     delete_item(id) {
-      initSqlJs().then(SQL => {
-        const db = this.$store.state.db;
-        db.run(`DELETE FROM menu WHERE id = ${id}`);
-        const data = db.export();
-        const buffer = new ArrayBuffer(data.length);
-        const view = new Uint8Array(buffer);
-        for (let i = 0; i < data.length; i++) {
-          view[i] = data[i];
-        }
-      });
-      delete this.editableData[id];
+      this.$store.commit("deleteMenuItem", id);
+      message.success("刪除成功");
     },
     addItem() {
       if (
@@ -195,10 +180,19 @@ export default {
       this.newItem.id = this.id;
       // this.$store.state.db.run(`INSERT INTO menu (id, name, purchase_price, selling_price, stock, unit, category) VALUES ('${this.id}', '${this.newItem.name}', 0, 0, 999, '${this.newItem.unit}', '${this.newItem.category}')`);
       this.$store.commit("addMenuItem", this.newItem)
+      message.success("保存成功");
     },
     onChange(pagination, filters, sorter, extra) {
       this.extra = extra;
     },
+    removeDB() {
+      this.$store.commit("removeDB");
+      this.warningModal = false;
+      window.location.reload();
+    },
+  },
+  created() {
+    this.menu = this.$store.state.menu;
   },
   data() {
     return {
@@ -216,6 +210,7 @@ export default {
         unit: "",
         category: "水菜",
       },
+      warningModal: false,
       columns: [
         {
           title: "名稱",
