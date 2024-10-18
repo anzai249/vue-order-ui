@@ -5,10 +5,16 @@ import Payment from "../views/payment/index.vue";
 import Order from "../views/orders/index.vue";
 import Login from "../views/admin/login.vue";
 import Admin from "../views/admin/admin.vue";
+import Shipping from "../views/shipping-gen/index.vue";
 
 const routes = [
   {
     path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/index.html',
     name: 'Home',
     component: Home
   },
@@ -28,10 +34,17 @@ const routes = [
     component: Order
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login
+    path: '/shipping',
+    name: 'Shipping',
+    component: Shipping
   },
+
+
+  // {
+  //   path: '/login',
+  //   name: 'Login',
+  //   component: Login
+  // },
   {
     path: '/admin',
     name: 'Admin',

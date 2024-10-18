@@ -26,16 +26,6 @@ export default {
     }
   },
   components: {Topbar},
-  mounted() {
-    if (localStorage.getItem(`${lc}-cart`)) {
-      if (localStorage.getItem(`${lc}-menu`) !== JSON.stringify(this.$store.state.menu)) {
-        message.warning("菜單已更新，請重新選購");
-      } else {
-        this.$store.commit("setCart", JSON.parse(localStorage.getItem(`${lc}-cart`)));
-        restoreMsg();
-      }
-    }
-  },
   methods: {
     startLoading(callback) {
       this.loading = true;
@@ -44,7 +34,7 @@ export default {
         callback();
       }, Math.floor(Math.random() * 2000));
     }
-  }
+  },
 }
 </script>
 

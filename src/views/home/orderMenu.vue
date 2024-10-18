@@ -8,34 +8,36 @@
         <a-radio-button value="豆類菇類小包菜">豆類菇類小包菜</a-radio-button>
       </a-radio-group>
     </div>
-    <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" v-show="typeFilter===key" :id="`foodItem_${key}`">
+    <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" v-show="typeFilter === key"
+      :id="`foodItem_${key}`">
       <span class="title">
         {{ key }}
       </span>
       <a-list class="itemList">
-        <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category===key && !!item.stock">
+        <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category === key && !!item.stock">
           <a-list-item-meta :title="item.name">
             <template #description>
-              <a-space>
+              <!-- <a-space>
                 <div class="priceGroup">
                   <span style="color: red">NT$ {{ item.selling_price }}</span>
                   <span>/{{ item.unit }}</span>
                 </div>
                 <span>庫存 {{ item.stock }}{{ item.unit }}</span>
-              </a-space>
+              </a-space> -->
             </template>
             <!-- <template #avatar v-if="item.img">
               <a-image :src="item.img" alt="img" class="foodImage"/>
             </template> -->
           </a-list-item-meta>
           <a-space>
-            <a-button type="primary" v-if="$store.getters.findCart(item.id) > 0" @click="$store.commit('removeFood', [item.id])"
-                      shape="circle">
+            <a-button type="primary" v-if="$store.getters.findCart(item.id) > 0"
+              @click="$store.commit('removeFood', [item.id])" shape="circle">
               <template #icon>
-                <MinusOutlined style="font-size: 11px"/>
+                <MinusOutlined style="font-size: 11px" />
               </template>
             </a-button>
-            <a-button type="primary" @click="orderFood(item.id)" shape="round" v-if="item.id!=='loading0-load-load-load-loadingload0'">
+            <a-button type="primary" @click="viewFood(item.id)" shape="round"
+              v-if="item.id !== 'loading0-load-load-load-loadingload0'">
               {{ $store.getters.findCart(item.id) > 0 ? $store.getters.findCart(item.id) : "加入購物車" }}
             </a-button>
           </a-space>
@@ -56,12 +58,16 @@
         <div class="type" v-for="type in viewCustom">
           <span class="typeTitle">{{ type.name }}</span>
           <a-button :type="option.checked ? `primary` : undefined" v-for="option in type.items" :key="option.id"
-                    :value="option.id" shape="round" class="typeItem" @click="option.checked = !option.checked">
+            :value="option.id" shape="round" class="typeItem" @click="option.checked = !option.checked">
             {{ option.name }}
             <span class="customPrice">
-            {{ option.selling_price ? `&nbsp;\$${option.selling_price}` : "" }}
+              {{ option.selling_price ? `&nbsp;\$${option.selling_price}` : "" }}
             </span>
           </a-button>
+        </div>
+        <div class="custom-price">
+          <span>單價</span>
+          <a-input v-model:value="priceSingle" :disabled="isPriceInputDisabled" />
         </div>
       </div>
       <template #footer>
@@ -69,10 +75,10 @@
           <span class="priceText">NT$ {{ getPrice() }}</span>
         </div>
         <a-space>
-          <a-button type="primary" v-if="$store.getters.findCart(viewTarget.id) > 0" @click="$store.commit('removeFood', [viewTarget.id])"
-                    shape="circle">
+          <a-button type="primary" v-if="$store.getters.findCart(viewTarget.id) > 0"
+            @click="$store.commit('removeFood', [viewTarget.id])" shape="circle">
             <template #icon>
-              <MinusOutlined style="font-size: 11px"/>
+              <MinusOutlined style="font-size: 11px" />
             </template>
           </a-button>
           <a-button type="primary" @click="orderFood(viewTarget.id)" shape="round">
@@ -86,7 +92,8 @@
 </template>
 
 <script>
-import {MinusOutlined} from '@ant-design/icons-vue'
+import { MinusOutlined } from '@ant-design/icons-vue'
+import { message } from "ant-design-vue";
 
 export default {
   name: "orderMenu",
@@ -95,16 +102,46 @@ export default {
       view: false,
       viewTarget: null,
       viewCustom: [],
-      typeFilter: "水菜"
+      typeFilter: "水菜",
+      priceSingle: null,
+      isPriceInputDisabled: false
     }
   },
   methods: {
     orderFood(foodid) {
+      if (!this.priceSingle) {
+        message.error("請輸入單價");
+        return;
+      }
+      if (this.priceSingle <= 0) {
+        message.error("單價需大於0");
+        return;
+      }
+      this.viewCustom.push({
+        items: [{
+          id: "price",
+          name: "單價",
+          selling_price: Number(this.priceSingle),
+          checked: true
+        }]
+      });
       let viewCustom = JSON.parse(JSON.stringify(this.viewCustom));
       this.$store.commit("orderFood", [foodid, viewCustom]);
       this.$forceUpdate()
+      this.priceSingle = null;
+      this.view = false;
+      this.viewCustom = [];
     },
     viewFood(foodid) {
+      console.log(this.$store.getters.findCustom(foodid));
+      if (this.$store.getters.findCart(foodid) > 0) {
+        this.$store.commit("orderFood", [foodid,
+          [{
+            items: this.$store.getters.findCustom(foodid)[0]
+          }]
+        ]);
+        return;
+      }
       this.view = true;
       this.viewTarget = this.$store.getters.findFood(foodid);
       this.viewTarget = JSON.parse(JSON.stringify(this.viewTarget));
@@ -128,15 +165,7 @@ export default {
       // console.log(this.viewCustom);
     },
     getPrice() {
-      let price = this.viewTarget.selling_price;
-      this.viewCustom.forEach(type => {
-        type.items.forEach(item => {
-          if (item.checked) {
-            price += item.selling_price;
-          }
-        })
-      });
-      return price;
+      return this.priceSingle;
     }
   },
   components: {
@@ -223,6 +252,18 @@ export default {
     .customPrice {
       color: #ccc;
       font-size: 12px;
+    }
+  }
+
+  .custom-price {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    input {
+      width: 80%;
+      min-width: 100px;
     }
   }
 }

@@ -31,12 +31,16 @@
       </a-list>
       <div class="payment-box">
         <div class="route">
-          個人資訊
+          客戶資訊
         </div>
         <div class="payment">
-          <a-input placeholder="姓名" v-model:value="name" style="margin-bottom: 10px"/>
-          <a-input placeholder="手機" v-model:value="phone" style="margin-bottom: 10px"/>
-          <a-input placeholder="地址" v-model:value="address" style="margin-bottom: 10px"/>
+          <a-input placeholder="客戶代號" v-model:value="customerid" style="margin-bottom: 10px"/>
+          <a-input placeholder="客戶名稱" v-model:value="name" style="margin-bottom: 10px"/>
+          <a-input placeholder="客戶電話" v-model:value="phone" style="margin-bottom: 10px"/>
+          <a-input placeholder="客戶地址" v-model:value="address" style="margin-bottom: 10px"/>
+          <a-input placeholder="業務人名" v-model:value="operatorName" style="margin-bottom: 10px"/>
+          <a-input placeholder="發票抬頭" v-model:value="invoiceTitle" style="margin-bottom: 10px"/>
+          <a-input placeholder="備注" v-model:value="note" style="margin-bottom: 10px"/>
         </div>
         <!-- <a-radio-group v-model:value="payment" class="payment">
           <a-radio :style="{display: 'flex', height: '30px', lineHeight: '30px'}"
@@ -76,7 +80,11 @@ export default {
       paymentMethod: require("../../app/config.json").shop.payment,
       name: "",
       phone: "",
-      address: ""
+      address: "",
+      customerid: "",
+      operatorName: "",
+      invoiceTitle: "",
+      note: ""
     };
   },
   mounted() {
@@ -92,86 +100,21 @@ export default {
   methods: {
     paymentEvent() {
       // 校驗台灣電話
-      if (!/^09\d{8}$/.test(this.phone)) {
-        message.error("請輸入正確的手機號碼");
-        return;
-      }
-      if (sessionStorage.getItem('adminAuth')) {
-        this.$root.startLoading(() => {
-          fetch(
-            'https://linebot.otakux.org/order-admin',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': sessionStorage.getItem('adminAuth')
-              },
-              body: JSON.stringify(
-                {
-                  "customer": {
-                      "name": this.name,
-                      "phone": this.phone,
-                      "address": this.address
-                  },
-                  "user": "clerkAdmin",
-                  "items": this.$store.getters.getAllFood
-              })
-            }
-          ).then((res) => {
-            // 400
-            if (res.status === 400) {
-              message.error("錯誤的請求，请返回LINE重新點餐");
-              return;
-            } else if (res.status === 500) {
-              message.error("伺服器錯誤，請稍後再試");
-              return;
-            } else {
-              localStorage.setItem("name", this.name);
-              localStorage.setItem("phone", this.phone);
-              localStorage.setItem("address", this.address);
-              message.success("點餐成功！");
-              this.$store.commit("cleanCart");
-            }
-          });
-        });
-        return;
-      }
-      this.$root.startLoading(() => {
-        fetch(
-          'https://linebot.otakux.org/order',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(
-              {
-                "customer": {
-                    "name": this.name,
-                    "phone": this.phone,
-                    "address": this.address
-                },
-                "user": this.$store.state.user,
-                "items": this.$store.getters.getAllFood
-            })
-          }
-        ).then((res) => {
-          // 400
-          if (res.status === 400) {
-            message.error("錯誤的請求，请返回LINE重新點餐");
-            return;
-          } else if (res.status === 500) {
-            message.error("伺服器錯誤，請稍後再試");
-            return;
-          } else {
-            localStorage.setItem("name", this.name);
-            localStorage.setItem("phone", this.phone);
-            localStorage.setItem("address", this.address);
-            message.success("成功！请退回LINE查看訂單");
-            this.$store.commit("cleanCart");
-            liff.closeWindow();
-          }
-        });
+      // if (!/^09\d{8}$/.test(this.phone)) {
+      //   message.error("請輸入正確的手機號碼");
+      //   return;
+      // }
+      this.$router.push({
+        name: 'Shipping',
+        query: {
+          name: this.name,
+          phone: this.phone,
+          address: this.address,
+          customerid: this.customerid,
+          operatorName: this.operatorName,
+          invoiceTitle: this.invoiceTitle,
+          note: this.note,
+        }
       });
     }
   },

@@ -1,9 +1,8 @@
-import {createStore} from 'vuex'
-import {message} from "ant-design-vue";
-
+import { createStore } from 'vuex'
+import { message } from "ant-design-vue";
 // plugin
-import {listenCart} from "./plugin.js";
-
+import { listenCart } from "./plugin.js";
+import initSqlJs from 'sql.js'
 // import menu from "../app/menu.json"
 
 // give id
@@ -16,19 +15,35 @@ import {listenCart} from "./plugin.js";
 //     }
 //   })
 // })
-
-
-fetch("https://linebot.otakux.org/api/menu/",
-  {method: "GET", headers: {"Content-Type": "application/json"}}
-).then(res => res.json()).then(res => {
-  store.state.menu = res
+// read sqlite read and write
+initSqlJs().then(function (SQL) {
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', '/veg_order.db', true);
+  xhr.responseType = 'arraybuffer';
+  xhr.onload = function (e) {
+    let uInt8Array = new Uint8Array(this.response);
+    let db = new SQL.Database(uInt8Array);
+    let menu = db.exec("SELECT * FROM menu")[0].values
+    let menuList = []
+    menu.forEach(item => {
+      menuList.push({
+        "category": item[6],
+        "id": item[0],
+        "name": item[1],
+        "purchase_price": item[2],
+        "selling_price": item[4],
+        "stock": item[3],
+        "unit": item[5]
+      })
+    })
+    store.state.menu = menuList
+    store.state.db = db
+  }
+  xhr.send();
 });
 
 const url = new URL(window.location.href);
 const params = new URLSearchParams(url.search);
-if (!params.get("userid")) {
-  message.error("無法獲取用戶ID，請回到LINE重新點擊");
-}
 
 const store = createStore({
   state: {
@@ -44,17 +59,13 @@ const store = createStore({
       },
     ],
     "cart": [],
-    "user": params.get("userid")
+    "user": params.get("userid"),
+    "db": ""
   },
   mutations: {
     orderFood(state, [foodid, custom]) {
       // if out of stock
       let found = state.menu.map((item) => item).flat().find((item) => item.id === foodid);
-      // if count more than stock
-      if (found.stock < state.cart.find((item) => item.id === foodid)?.count + 1) {
-        message.error("超出庫存")
-        return
-      }
       // custom edit
       const customList = []
       custom.forEach(list => {
@@ -99,6 +110,16 @@ const store = createStore({
     },
     cleanCart(state) {
       state.cart = []
+    },
+    addMenuItem(state, item) {
+      console.log(item)
+      // add menu item to db
+      let res = store.state.db.run(
+        "INSERT INTO menu (id, name, purchase_price, stock, selling_price, unit, category) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [item.id, item.name, 0, 999, 0, item.unit, item.category]
+      );
+      console.log(res)
+      state.menu.push(item)
     }
   },
   actions: {},
@@ -115,6 +136,12 @@ const store = createStore({
         return state.cart.find((item) => item.id === foodid)?.count;
       }
     },
+    findCustom(state) {
+      // found in cart.custom
+      return (foodid) => {
+        return state.cart.find((item) => item.id === foodid)?.custom;
+      }
+    },
     foodCount(state) {
       // found in cart.count
       return state.cart.map((item) => item.count).reduce((a, b) => a + b, 0);
@@ -128,7 +155,6 @@ const store = createStore({
     getTotal(state) {
       let price = 0;
       state.cart.forEach((food) => {
-        price += food.selling_price * food.count;
         food.custom.forEach((customList) => {
           customList.forEach((custom) => {
             price += custom.selling_price;
@@ -157,7 +183,7 @@ const store = createStore({
     },
     calcPrice() {
       return (item) => {
-        let price = item.selling_price;
+        let price = 0;
         item.custom.forEach((item) => {
           price += item.selling_price;
         })

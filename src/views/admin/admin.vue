@@ -11,15 +11,6 @@
             <!-- 需要全部參數 -->
             <div class="add-item">
               <a-input v-model:value="newItem.name" placeholder="名稱" />
-              <a-input
-                v-model:value="newItem.purchase_price"
-                placeholder="進價"
-              />
-              <a-input
-                v-model:value="newItem.selling_price"
-                placeholder="售價"
-              />
-              <a-input v-model:value="newItem.stock" placeholder="庫存" />
               <a-input v-model:value="newItem.unit" placeholder="單位" />
               <a-select
                 style="width: 100%"
@@ -40,7 +31,7 @@
           </div>
           <!-- <a-button class="add-button" type="primary" @click="addItem"><PlusOutlined />增加</a-button> -->
           <a-table
-            :dataSource="menu"
+            :dataSource="$store.state.menu"
             :columns="columns"
             :row-class-name="
               (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
@@ -129,73 +120,6 @@
           </a-table>
         </div>
       </a-row>
-      <a-row :span="12">
-        <div class="section">
-          <h2>訂單管理</h2>
-          <a-row v-if="!!extra.currentDataSource">
-            <a-col :span="12">
-              <a-statistic style="float: right;"
-                title="篩選後用戶總消費（僅已完成）/NT$"
-                :value="extra.currentDataSource.filter((item) => item.status.text === '完成').reduce((acc, cur) => acc + cur.total_price, 0)"
-                precision="2"
-              />
-            </a-col>
-          </a-row>
-          <a-table
-            :dataSource="orders"
-            :columns="orderColumns"
-            :row-class-name="
-              (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
-            "
-            class="ant-table-striped"
-            @change="onChange"
-          >
-            <template #bodyCell="{ column, text, record }">
-              <template v-if="column.dataIndex === 'status'">
-                <a-tag :color="text.color">{{ text.text }}</a-tag>
-              </template>
-              <template v-else-if="column.dataIndex === 'order_id'">
-                {{ text.split("-")[0] }}
-              </template>
-              <!-- operations -->
-                <template v-else-if="column.dataIndex === 'operation'">
-                    <a-button
-                    v-if="record.status.text === '商家未確認'"
-                    type="link"
-                    @click="confirmOrder(record)"
-                    >確認</a-button
-                    >
-                    <a-button
-                    v-if="record.status.text === '商家未確認'"
-                    type="link"
-                    @click="rejectOrder(record)"
-                    >拒絕</a-button
-                    >
-                    <a-button
-                    v-if="record.status.text === '準備送貨'"
-                    type="link"
-                    @click="completeOrder(record)"
-                    >送達</a-button
-                    >
-                </template>
-              <template v-else>
-                {{ text }}
-              </template>
-            </template>
-            <template #expandedRowRender="{ record }">
-              <p style="margin: 0">
-                <!-- 重複物品顯示×2，×3 -->
-                <span v-for="item in record.items">
-                    {{ item.name }}×{{ item.count }}{{ item.unit }}
-                    <span v-if="record.items.indexOf(item) !== record.items.length - 1"
-                        >, </span
-                    >
-                </span>
-              </p>
-            </template>
-          </a-table>
-        </div>
-      </a-row>
     </a-col>
   </div>
 </template>
@@ -203,6 +127,8 @@
 <script>
 import { message } from "ant-design-vue";
 import { QuestionCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
+import initSqlJs from 'sql.js'
+import { uuid } from "jsfast";
 
 export default {
   name: "AdminPage",
@@ -210,118 +136,33 @@ export default {
     QuestionCircleOutlined,
     PlusOutlined,
   },
-  created() {
-    if (!sessionStorage.getItem("adminAuth")) {
-      this.$router.push("/login");
-      return;
-    }
-    // fetch menu
-    fetch("https://linebot.otakux.org/api/menu/", {
-        headers: {
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-      method: "GET",
-      ContentType: "application/json",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        this.menu = data;
-      });
-
-    // fetch orders
-    fetch("https://linebot.otakux.org/api/orders/orders", {
-        headers: {
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-      method: "GET",
-      ContentType: "application/json",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // '0-本人未確認', '1-商家未確認', '2-準備送貨', '7-已遭拒絕','8-已取消', '9-已失效', '10-完成', '100-異常'
-        data.forEach((item) => {
-          item.status = {
-            0: { text: "本人未確認", color: "red" },
-            1: { text: "商家未確認", color: "" },
-            2: { text: "準備送貨", color: "" },
-            7: { text: "已遭拒絕", color: "red" },
-            8: { text: "已取消", color: "grey" },
-            9: { text: "已失效", color: "grey" },
-            10: { text: "完成", color: "green" },
-            100: { text: "異常", color: "red" },
-          }[item.status];
-        });
-        data.forEach((item) => {
-          item.items = item.items.split(",");
-        //   item 2 json
-          item.items = JSON.parse(item.items);
-            // 合并重复项
-            let items = [];
-            item.items.forEach((item) => {
-              let index = items.findIndex((i) => i.id === item.id);
-              if (index === -1) {
-                items.push({ ...item, count: 1 });
-              } else {
-                items[index].count++;
-              }
-            });
-            item.items = items;
-        });
-        // 逆序
-        data = data.reverse();
-        this.orders = data;
-        this.orderColumns[3].filters = [
-          ...new Set(data.map((item) => item.tel)),
-        ].map((tel) => ({ text: tel, value: tel }));
-        this.orderColumns[3].onFilter = (value, record) => {
-          return record.tel.startsWith(value);
-        },
-        this.orderColumns[3].filterSearch = true;
-        this.orderColumns[0].filters = [
-          ...new Set(data.map((item) => item.order_id)),
-        ].map((order_id) => ({ text: order_id, value: order_id }));
-        this.orderColumns[0].onFilter = (value, record) => {
-          return record.order_id.startsWith(value);
-        },
-        this.orderColumns[0].filterSearch = true;
-      });
-  },
   methods: {
     edit(id) {
       this.editableData[id] = { ...this.menu.find((item) => item.id === id) };
     },
     save(id) {
       if (
-        isNaN(this.editableData[id].purchase_price) ||
-        isNaN(this.editableData[id].selling_price) ||
-        isNaN(this.editableData[id].stock) ||
         !this.editableData[id].name ||
-        !this.editableData[id].purchase_price ||
-        !this.editableData[id].selling_price ||
         !this.editableData[id].stock ||
         !this.editableData[id].unit
       ) {
-        message.error("請填寫完整，價格和庫存必須是數字");
+        message.error("請填寫完整");
         return;
       }
       const newData = this.editableData[id];
       const index = this.menu.findIndex((item) => item.id === id);
       const item = this.menu[index];
       this.menu.splice(index, 1, { ...item, ...newData });
-      fetch(`https://linebot.otakux.org/api/menu/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-        body: JSON.stringify(newData),
-      }).then((res) => {
-        if (res.status !== 200) {
-          message.error("保存失敗");
-          return;
+      // edit item in ./veg_order.db
+      initSqlJs().then(SQL => {
+        const db = this.$store.state.db;
+        db.run(`UPDATE menu SET name = '${newData.name}', purchase_price = 0, selling_price = 0, stock = 999, unit = '${newData.unit}', category = '${newData.category}' WHERE id = ${id}`);
+        const data = db.export();
+        const buffer = new ArrayBuffer(data.length);
+        const view = new Uint8Array(buffer);
+        for (let i = 0; i < data.length; i++) {
+          view[i] = data[i];
         }
-        message.success("保存成功");
-        delete this.editableData[id];
       });
       delete this.editableData[id];
     },
@@ -329,122 +170,31 @@ export default {
       delete this.editableData[id];
     },
     delete_item(id) {
-      fetch(`https://linebot.otakux.org/api/menu/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-      }).then((res) => {
-        if (res.status !== 200) {
-          message.error("刪除失敗");
-          return;
+      initSqlJs().then(SQL => {
+        const db = this.$store.state.db;
+        db.run(`DELETE FROM menu WHERE id = ${id}`);
+        const data = db.export();
+        const buffer = new ArrayBuffer(data.length);
+        const view = new Uint8Array(buffer);
+        for (let i = 0; i < data.length; i++) {
+          view[i] = data[i];
         }
-        this.menu = this.menu.filter((item) => item.id !== id);
-        message.success("刪除成功");
-        delete this.editableData[id];
       });
       delete this.editableData[id];
     },
     addItem() {
       if (
         !this.newItem.name ||
-        !this.newItem.purchase_price ||
-        !this.newItem.selling_price ||
-        !this.newItem.stock ||
         !this.newItem.unit
       ) {
         message.error("請填寫完整");
         return;
       }
-      // price stock must be a number
-      if (
-        isNaN(this.newItem.purchase_price) ||
-        isNaN(this.newItem.selling_price) ||
-        isNaN(this.newItem.stock)
-      ) {
-        message.error("價格和庫存必須是數字");
-        return;
-      }
-      fetch("https://linebot.otakux.org/api/menu/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-        body: JSON.stringify({
-          ...this.newItem,
-        }),
-      })
-        .then((res) => {
-          if (res.status !== 201) {
-            message.error(res.error);
-            return;
-          } else {
-            message.success("新增成功");
-          }
-          return res.json();
-        })
-        .then((data) => {
-          this.menu.push(this.newItem);
-          this.edit(data.item_id);
-        });
-    },
-    confirmOrder(record) {
-      fetch(`https://linebot.otakux.org/api/orders/orders/${record.order_id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-        body: JSON.stringify({
-          status: 2,
-        }),
-      }).then((res) => {
-        if (res.status !== 200) {
-          message.error("確認失敗");
-          return;
-        }
-        message.success("確認成功");
-        record.status = { text: "準備送貨", color: "" };
-      });
-    },
-    rejectOrder(record) {
-      fetch(`https://linebot.otakux.org/api/orders/orders/${record.order_id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-        body: JSON.stringify({
-          status: 7,
-        }),
-      }).then((res) => {
-        if (res.status !== 200) {
-          message.error("拒絕失敗");
-          return;
-        }
-        message.success("拒絕成功");
-        record.status = { text: "已遭拒絕", color: "red" };
-      });
-    },
-    completeOrder(record) {
-      fetch(`https://linebot.otakux.org/api/orders/orders/${record.order_id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("adminAuth"),
-        },
-        body: JSON.stringify({
-          status: 10,
-        }),
-      }).then((res) => {
-        if (res.status !== 200) {
-          message.error("送達失敗");
-          return;
-        }
-        message.success("送達成功");
-        record.status = { text: "完成", color: "green" };
-      });
+      // generate a new uuid
+      this.id = uuid();
+      this.newItem.id = this.id;
+      // this.$store.state.db.run(`INSERT INTO menu (id, name, purchase_price, selling_price, stock, unit, category) VALUES ('${this.id}', '${this.newItem.name}', 0, 0, 999, '${this.newItem.unit}', '${this.newItem.category}')`);
+      this.$store.commit("addMenuItem", this.newItem)
     },
     onChange(pagination, filters, sorter, extra) {
       this.extra = extra;
@@ -457,6 +207,7 @@ export default {
       editableData: {},
       filteredPhoneValue: "",
       extra: {filters:{}},
+      id: "",
       newItem: {
         name: "",
         purchase_price: null,
@@ -465,93 +216,12 @@ export default {
         unit: "",
         category: "水菜",
       },
-      orderColumns: [
-        {
-          title: "短編號",
-          dataIndex: "order_id",
-          key: "order_id",
-          scopedSlots: { customRender: "order_id" },
-          width: "10%",
-          fixed: 'left',
-        },
-        {
-          title: "姓名",
-          dataIndex: "name",
-          key: "name",
-          scopedSlots: { customRender: "name" },
-          width: "10%",
-        },
-        {
-          title: "送貨地址",
-          dataIndex: "delivery_address",
-          key: "delivery_address",
-          scopedSlots: { customRender: "delivery_address" },
-          width: "25%",
-        },
-        {
-          title: "電話",
-          dataIndex: "tel",
-          key: "tel",
-          scopedSlots: { customRender: "tel" },
-          width: "15%",
-        },
-        {
-          title: "下單日期",
-          dataIndex: "order_date",
-          key: "order_date",
-          scopedSlots: { customRender: "order_date" },
-          width: "20%",
-        },
-        {
-          title: "總價/NT$",
-          dataIndex: "total_price",
-          key: "total_price",
-          scopedSlots: { customRender: "total_price" },
-          width: "10%",
-        },
-        {
-          title: "狀態",
-          dataIndex: "status",
-          key: "status",
-          scopedSlots: { customRender: "status" },
-          width: "10%",
-        },
-        {
-          title: "操作",
-          dataIndex: "operation",
-          key: "action",
-          scopedSlots: { customRender: "action" },
-          width: "10%",
-          fixed: 'right',
-        },
-      ],
       columns: [
         {
           title: "名稱",
           dataIndex: "name",
           key: "name",
           scopedSlots: { customRender: "name" },
-          width: "10%",
-        },
-        {
-          title: "進價",
-          dataIndex: "purchase_price",
-          key: "purchase_price",
-          scopedSlots: { customRender: "purchase_price" },
-          width: "10%",
-        },
-        {
-          title: "售價",
-          dataIndex: "selling_price",
-          key: "selling_price",
-          scopedSlots: { customRender: "selling_price" },
-          width: "10%",
-        },
-        {
-          title: "庫存",
-          dataIndex: "stock",
-          key: "stock",
-          scopedSlots: { customRender: "stock" },
           width: "10%",
         },
         {
@@ -566,7 +236,7 @@ export default {
           dataIndex: "category",
           key: "category",
           scopedSlots: { customRender: "category" },
-          width: "20%",
+          width: "15%",
         },
         {
           title: "操作",

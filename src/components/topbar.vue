@@ -13,12 +13,12 @@
   <router-link to="/" @click="scrollTo('foodItem_'+key)">{{ key }}</router-link>
 </a-menu-item>
 </a-sub-menu> -->
-          <a-menu-item key="1">
+          <!-- <a-menu-item key="1">
             <router-link :to="{
               name: 'Order',
               query: { userid: this.$store.state.user }
             }">我的訂單</router-link>
-          </a-menu-item>
+          </a-menu-item> -->
           <a-menu-item key="4">
             <router-link :to="{
               name: 'Checkout',
@@ -39,10 +39,10 @@
     </div>
     <div class="right">
       <router-link :to="{
-        name: 'Order',
+        name: 'Admin',
         query: { userid: this.$store.state.user }
       }">
-        <FileSearchOutlined class="icon" />
+        <EditOutlined class="icon" />
       </router-link>
       <router-link :to="{
         name: 'Checkout',
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { MenuUnfoldOutlined, ShoppingCartOutlined, FileSearchOutlined } from '@ant-design/icons-vue'
+import { MenuUnfoldOutlined, ShoppingCartOutlined, EditOutlined } from '@ant-design/icons-vue'
 // import {selecter as $} from "jsfast"
 
 export default {
@@ -86,7 +86,7 @@ export default {
   components: {
     MenuUnfoldOutlined,
     ShoppingCartOutlined,
-    FileSearchOutlined
+    EditOutlined
   }
 }
 </script>
