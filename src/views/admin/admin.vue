@@ -398,6 +398,7 @@ export default {
         },
         body: JSON.stringify({
           status: 2,
+          from: "website",
         }),
       }).then((res) => {
         if (res.status !== 200) {
