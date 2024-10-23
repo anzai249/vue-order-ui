@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import { message } from "ant-design-vue";
-
+const lc = require('../app/config.json').localStorageName
+import restoreMsg from "../function/restoreMsg.js";
 // plugin
 import { listenCart } from "./plugin.js";
 import ExcelJS from 'exceljs';
@@ -20,7 +21,8 @@ const store = createStore({
       },
     ],
     "cart": [],
-    "db": null
+    "db": null,
+    "originalMenu": []
   },
   mutations: {
     orderFood(state, [foodid, custom, quantity]) {
@@ -78,6 +80,9 @@ const store = createStore({
       request.onsuccess = function (event) {
         console.log("customer added to db")
       };
+    },
+    setMenu(state, menu) {
+      state.menu = menu
     }
   },
   actions: {},
@@ -174,6 +179,20 @@ fetch('/veg.xlsx')
       }
     });
     store.state.menu = resultAvailable;
+    store.state.originalMenu = resultAvailable;
+    if (localStorage.getItem(`${lc}-cart`)) {
+      let storageCart = JSON.parse(localStorage.getItem(`${lc}-cart`));
+      // 按照name重新計算價格
+      storageCart.forEach((item) => {
+        let found = resultAvailable.find((food) => food.name === item.name);
+        if (found) {
+          item.selling_price = found.selling_price;
+        }
+      });
+      localStorage.setItem(`${lc}-cart`, JSON.stringify(storageCart));
+      store.commit('setCart', storageCart);
+      restoreMsg();
+    }
   })
   .catch(error => {
     console.error("Error loading file:", error);

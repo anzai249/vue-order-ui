@@ -1,11 +1,11 @@
 <template>
   <a-config-provider :autoInsertSpaceInButton="false">
     <a-spin :spinning="loading" size="large" tip="下單中...">
-      <Topbar/>
+      <Topbar />
       <div class="fadeTopbar"></div>
-      <router-view v-slot="{ Component }" :style="{'overflow-y':!loading || 'hidden'}">
+      <router-view v-slot="{ Component }" :style="{ 'overflow-y': !loading || 'hidden' }">
         <transition name="fade" mode="out-in">
-          <component :is="Component"/>
+          <component :is="Component" />
         </transition>
       </router-view>
     </a-spin>
@@ -14,8 +14,7 @@
 
 <script>
 import Topbar from "./components/topbar.vue";
-import restoreMsg from "./function/restoreMsg.js";
-import {message} from "ant-design-vue";
+import { message } from "ant-design-vue";
 const lc = require('./app/config.json').localStorageName
 
 export default {
@@ -25,7 +24,13 @@ export default {
       loading: false,
     }
   },
-  components: {Topbar},
+  components: { Topbar },
+  // mounted() {
+  //   if (localStorage.getItem(`${lc}-cart`)) {
+  //     this.$store.commit("setCart", JSON.parse(localStorage.getItem(`${lc}-cart`)));
+  //     restoreMsg();
+  //   }
+  // },
   methods: {
     startLoading(callback) {
       this.loading = true;
@@ -53,7 +58,7 @@ export default {
   height: 50px;
 }
 
-body > #app .ant-spin {
+body>#app .ant-spin {
   position: absolute;
   top: 0;
   bottom: 0;

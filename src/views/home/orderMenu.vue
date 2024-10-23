@@ -7,6 +7,11 @@
         <a-radio-button value="根莖類">根莖類</a-radio-button>
         <a-radio-button value="豆類菇類小包菜">豆類菇類小包菜</a-radio-button>
       </a-radio-group>
+      <a-input v-model:value="searchText" placeholder="搜尋" style="max-width: 200px;" @change="search()">
+        <template #prefix>
+          <SearchOutlined />
+        </template>
+      </a-input>
     </div>
     <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" v-show="typeFilter === key"
       :id="`foodItem_${key}`">
@@ -96,7 +101,7 @@
 </template>
 
 <script>
-import { MinusOutlined } from '@ant-design/icons-vue'
+import { MinusOutlined, SearchOutlined } from '@ant-design/icons-vue'
 
 export default {
   name: "orderMenu",
@@ -106,7 +111,8 @@ export default {
       viewTarget: null,
       viewCustom: [],
       typeFilter: "水菜",
-      quantity: 1
+      quantity: 1,
+      searchText: ""
     }
   },
   methods: {
@@ -150,10 +156,26 @@ export default {
         })
       });
       return price;
+    },
+    search() {
+      if (this.searchText === "") {
+        this.$store.commit("setMenu", this.$store.state.originalMenu);
+        return;
+      }
+      let searchText = this.searchText;
+      let menu = this.$store.state.menu;
+      let result = [];
+      menu.forEach(item => {
+        if (item.name.includes(searchText)) {
+          result.push(item);
+        }
+      });
+      this.$store.commit("setMenu", result);
     }
   },
   components: {
-    MinusOutlined
+    MinusOutlined,
+    SearchOutlined
   }
 }
 </script>
