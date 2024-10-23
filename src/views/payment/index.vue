@@ -6,21 +6,21 @@
           name: 'Home',
           query: { userid: this.$store.state.user }
         }">
-          <left-outlined style="margin-right: 5px"/>
+          <left-outlined style="margin-right: 5px" />
         </router-link>
         購物車
       </div>
       <a-list class="itemList"
-              :pagination="{position: 'bottom', pageSize: 5, showSizeChanger: false, showQuickJumper: true, total: $store.getters.getAllFood.length}"
-              :data-source="$store.getters.getAllFood">
+        :pagination="{ position: 'bottom', pageSize: 5, showSizeChanger: false, showQuickJumper: true, total: $store.getters.getAllFood.length }"
+        :data-source="$store.getters.getAllFood">
         <template #renderItem="{ item }">
           <a-list-item>
             <a-list-item-meta :title="item.name">
               <template #description>
-                <span style="color: red;display: block">NT$ {{ $store.getters.calcPrice(item) }}</span>
-                <span style="color: gray;display: block" v-for="custom in item.custom" :key="custom.id">
-               - {{ custom.name }}
-            </span>
+                <span style="color: gray;display: block">- 單價：NT$ {{ $store.getters.calcPrice(item) }}</span>
+                <span style="color: gray;display: block">- 重量：{{ item.count }} kg</span>
+                <span style="color: red;display: block">NT$ {{ ($store.getters.calcPrice(item) * item.count).toFixed(1)
+                  }}</span>
               </template>
               <template #avatar v-if="item.img">
                 <!-- <a-image :src="item.img" alt="img" class="foodImage"/> -->
@@ -34,13 +34,15 @@
           客戶資訊
         </div>
         <div class="payment">
-          <a-input placeholder="客戶代號" v-model:value="customerid" style="margin-bottom: 10px"/>
-          <a-input placeholder="客戶名稱" v-model:value="name" style="margin-bottom: 10px"/>
-          <a-input placeholder="客戶電話" v-model:value="phone" style="margin-bottom: 10px"/>
-          <a-input placeholder="客戶地址" v-model:value="address" style="margin-bottom: 10px"/>
-          <a-input placeholder="業務人名" v-model:value="operatorName" style="margin-bottom: 10px"/>
-          <a-input placeholder="發票抬頭" v-model:value="invoiceTitle" style="margin-bottom: 10px"/>
-          <a-input placeholder="備注" v-model:value="note" style="margin-bottom: 10px"/>
+          <a-select ref="select" style="width: 100%;" v-model:value="value1" :options="customInfo"
+            @change="handleChange" placeholder="模板"></a-select>
+          <a-input placeholder="客戶代號" v-model:value="customerid" style="margin-bottom: 10px" />
+          <a-input placeholder="客戶名稱*" v-model:value="name" style="margin-bottom: 10px" />
+          <a-input placeholder="客戶電話*" v-model:value="phone" style="margin-bottom: 10px" />
+          <a-input placeholder="客戶地址*" v-model:value="address" style="margin-bottom: 10px" />
+          <a-input placeholder="業務人名" v-model:value="operatorName" style="margin-bottom: 10px" />
+          <a-input placeholder="發票抬頭" v-model:value="invoiceTitle" style="margin-bottom: 10px" />
+          <a-input placeholder="備注" v-model:value="note" style="margin-bottom: 10px" />
         </div>
         <!-- <a-radio-group v-model:value="payment" class="payment">
           <a-radio :style="{display: 'flex', height: '30px', lineHeight: '30px'}"
@@ -59,8 +61,7 @@
         </span>
       </div>
       <div class="button">
-          <a-button type="primary" shape="round" :disabled="
-          !name || !phone || !address || $store.getters.getAllFood.length === 0
+        <a-button type="primary" shape="round" :disabled="!name || !phone || !address || $store.getters.getAllFood.length === 0
           " @click="paymentEvent()">確認下單</a-button>
       </div>
     </div>
@@ -68,8 +69,8 @@
 </template>
 
 <script>
-import {LeftOutlined} from "@ant-design/icons-vue";
-import {message} from "ant-design-vue";
+import { LeftOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 import liff from '@line/liff'
 
 export default {
@@ -84,26 +85,80 @@ export default {
       customerid: "",
       operatorName: "",
       invoiceTitle: "",
-      note: ""
+      note: "",
+      customInfo: [],
+      value1: '空模板',
     };
   },
   mounted() {
     this.name = localStorage.getItem("name") || "";
     this.phone = localStorage.getItem("phone") || "";
     this.address = localStorage.getItem("address") || "";
-    if(sessionStorage.getItem('adminAuth')) {
+    if (sessionStorage.getItem('adminAuth')) {
       this.name = "到店消費";
       this.phone = "0900000000";
       this.address = "到店消費";
     }
+    // read indexedDB
+    this.customInfo = localStorage.getItem("customer") ? JSON.parse(localStorage.getItem("customer")) : [{
+      label: '空模板',
+      value: JSON.stringify({
+        name: '',
+        phone: '',
+        address: '',
+        customerid: '',
+        operatorName: '',
+        invoiceTitle: '',
+      })
+    }];
   },
   methods: {
     paymentEvent() {
-      // 校驗台灣電話
-      // if (!/^09\d{8}$/.test(this.phone)) {
-      //   message.error("請輸入正確的手機號碼");
-      //   return;
-      // }
+      let localCustomer = localStorage.getItem("customer") ? JSON.parse(localStorage.getItem("customer")) : [];
+      // 如果name已存在，則修改
+      let isExist = false;
+      localCustomer.forEach((item, index) => {
+        if (JSON.parse(item.value).name === this.name) {
+          localCustomer[index] = {
+            label: this.name,
+            value: JSON.stringify({
+              name: this.name,
+              phone: this.phone,
+              address: this.address,
+              customerid: this.customerid,
+              operatorName: this.operatorName,
+              invoiceTitle: this.invoiceTitle,
+            })
+          };
+          isExist = true;
+        }
+      });
+      if (!isExist) {
+        localCustomer.push({
+          label: this.name,
+          value: JSON.stringify({
+            name: this.name,
+            phone: this.phone,
+            address: this.address,
+            customerid: this.customerid,
+            operatorName: this.operatorName,
+            invoiceTitle: this.invoiceTitle,
+          })
+        });
+
+        this.$store.commit('addCustomer', {
+          label: this.name,
+          value: JSON.stringify({
+            name: this.name,
+            phone: this.phone,
+            address: this.address,
+            customerid: this.customerid,
+            operatorName: this.operatorName,
+            invoiceTitle: this.invoiceTitle,
+          })
+        });
+      }
+      localStorage.setItem("customer", JSON.stringify(localCustomer));
       this.$router.push({
         name: 'Shipping',
         query: {
@@ -116,9 +171,18 @@ export default {
           note: this.note,
         }
       });
+    },
+    handleChange(value) {
+      value = JSON.parse(value);
+      this.name = value.name;
+      this.phone = value.phone;
+      this.address = value.address;
+      this.customerid = value.customerid;
+      this.operatorName = value.operatorName;
+      this.invoiceTitle = value.invoiceTitle;
     }
   },
-  components: {LeftOutlined}
+  components: { LeftOutlined }
 }
 </script>
 
@@ -177,7 +241,7 @@ export default {
     .count {
       height: 100%;
 
-      > span {
+      >span {
         display: block;
       }
 
@@ -189,6 +253,7 @@ export default {
         font-size: 20px;
         font-weight: bold;
         margin: 0 15%;
+        color: red;
       }
     }
 

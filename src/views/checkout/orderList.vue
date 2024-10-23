@@ -28,21 +28,20 @@
         <a-list-item>
           <a-list-item-meta :title="item.name">
             <template #description>
-              <span style="color: red;display: block">NT$ {{ $store.getters.calcPrice(item) }}</span>
-              <span style="color: gray;display: block" v-for="custom in item.custom" :key="custom.id">
-               - {{ custom.name }}
-            </span>
+              <span style="color: gray;display: block">- 單價：NT$ {{ $store.getters.calcPrice(item) }}</span>
+              <span style="color: gray;display: block">- 重量：{{ item.count }} kg</span>
+              <span style="color: red;display: block">NT$ {{ ($store.getters.calcPrice(item) * item.count).toFixed(1) }}</span>
             </template>
             <template #avatar v-if="item.img">
               <a-image :src="item.img" alt="img" class="foodImage" />
             </template>
           </a-list-item-meta>
           <a-space>
-            <a-button type="primary" v-if="item.count > 0" @click="$store.commit('removeFood', [item.id])" shape="circle">
+            <!-- <a-button type="primary" v-if="item.count > 0" @click="$store.commit('removeFood', [item.id])" shape="circle">
               <template #icon>
                 <MinusOutlined style="font-size: 11px"/>
               </template>
-            </a-button>
+            </a-button> -->
             <a-button type="primary" @click="$store.commit('removeFood', [item.id])" danger shape="round">
               從購物車中移除
             </a-button>

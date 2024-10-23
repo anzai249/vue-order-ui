@@ -14,16 +14,15 @@
         {{ key }}
       </span>
       <a-list class="itemList">
-        <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category === key && !!item.stock">
+        <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category === key">
           <a-list-item-meta :title="item.name">
             <template #description>
-              <!-- <a-space>
+              <a-space>
                 <div class="priceGroup">
-                  <span style="color: red">NT$ {{ item.selling_price }}</span>
+                  <span style="color: red">NT$ {{ item.selling_price.result }}</span>
                   <span>/{{ item.unit }}</span>
                 </div>
-                <span>庫存 {{ item.stock }}{{ item.unit }}</span>
-              </a-space> -->
+              </a-space>
             </template>
             <!-- <template #avatar v-if="item.img">
               <a-image :src="item.img" alt="img" class="foodImage"/>
@@ -53,6 +52,10 @@
         <div class="foodInfoText">
           <span class="foodName">{{ viewTarget.name }}</span>
         </div>
+        <div class="price">
+          <span>單價：</span>
+          <span class="priceText">NT$ {{ getPrice() }}</span>
+        </div>
       </div>
       <div class="custom">
         <div class="type" v-for="type in viewCustom">
@@ -61,18 +64,19 @@
             :value="option.id" shape="round" class="typeItem" @click="option.checked = !option.checked">
             {{ option.name }}
             <span class="customPrice">
-              {{ option.selling_price ? `&nbsp;\$${option.selling_price}` : "" }}
+              {{ option.selling_price.result ? `&nbsp;\$${option.selling_price.result}` : "" }}
             </span>
           </a-button>
         </div>
-        <div class="custom-price">
-          <span>單價</span>
-          <a-input v-model:value="priceSingle" :disabled="isPriceInputDisabled" />
-        </div>
+      </div>
+      <div class="customQuantity">
+        <span>數量：</span>
+        <a-input-number id="inputNumber" v-model:value="quantity" :min="0.1">
+        </a-input-number>
       </div>
       <template #footer>
         <div class="price" style="float: left">
-          <span class="priceText">NT$ {{ getPrice() }}</span>
+          <span class="priceText">NT$ {{ (getPrice() * quantity).toFixed(1) }}</span>
         </div>
         <a-space>
           <a-button type="primary" v-if="$store.getters.findCart(viewTarget.id) > 0"
@@ -83,7 +87,7 @@
           </a-button>
           <a-button type="primary" @click="orderFood(viewTarget.id)" shape="round">
             {{ $store.getters.findCart(viewTarget.id) > 0 ?
-              $store.getters.findCart(viewTarget.id) : "加入購物車" }}
+              $store.getters.findCart(viewTarget.id) : "確認" }}
           </a-button>
         </a-space>
       </template>
@@ -93,7 +97,6 @@
 
 <script>
 import { MinusOutlined } from '@ant-design/icons-vue'
-import { message } from "ant-design-vue";
 
 export default {
   name: "orderMenu",
@@ -103,45 +106,18 @@ export default {
       viewTarget: null,
       viewCustom: [],
       typeFilter: "水菜",
-      priceSingle: null,
-      isPriceInputDisabled: false
+      quantity: 1
     }
   },
   methods: {
     orderFood(foodid) {
-      if (!this.priceSingle) {
-        message.error("請輸入單價");
-        return;
-      }
-      if (this.priceSingle <= 0) {
-        message.error("單價需大於0");
-        return;
-      }
-      this.viewCustom.push({
-        items: [{
-          id: "price",
-          name: "單價",
-          selling_price: Number(this.priceSingle),
-          checked: true
-        }]
-      });
       let viewCustom = JSON.parse(JSON.stringify(this.viewCustom));
-      this.$store.commit("orderFood", [foodid, viewCustom]);
+      this.$store.commit("orderFood", [foodid, viewCustom, this.quantity]);
       this.$forceUpdate()
-      this.priceSingle = null;
+      this.quantity = 1;
       this.view = false;
-      this.viewCustom = [];
     },
     viewFood(foodid) {
-      console.log(this.$store.getters.findCustom(foodid));
-      if (this.$store.getters.findCart(foodid) > 0) {
-        this.$store.commit("orderFood", [foodid,
-          [{
-            items: this.$store.getters.findCustom(foodid)[0]
-          }]
-        ]);
-        return;
-      }
       this.view = true;
       this.viewTarget = this.$store.getters.findFood(foodid);
       this.viewTarget = JSON.parse(JSON.stringify(this.viewTarget));
@@ -165,7 +141,15 @@ export default {
       // console.log(this.viewCustom);
     },
     getPrice() {
-      return this.priceSingle;
+      let price = this.viewTarget.selling_price.result;
+      this.viewCustom.forEach(type => {
+        type.items.forEach(item => {
+          if (item.checked) {
+            price += item.selling_price.result;
+          }
+        })
+      });
+      return price;
     }
   },
   components: {
@@ -254,17 +238,16 @@ export default {
       font-size: 12px;
     }
   }
+}
 
-  .custom-price {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.customQuantity {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
 
-    input {
-      width: 80%;
-      min-width: 100px;
-    }
+  input {
+    max-width: 200px;
   }
 }
 

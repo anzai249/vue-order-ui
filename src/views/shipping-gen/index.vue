@@ -15,7 +15,13 @@
                                 <td class="tg-0lax">訂購單號：</td>
                             </tr>
                             <tr>
-                                <td class="tg-0lax">銷貨日期：</td>
+                                <td class="tg-0lax">銷貨日期：{{ 
+                                    new Date().toLocaleDateString('zh-TW', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit'
+                                    })
+                                    }}</td>
                                 <td class="tg-0lax" colspan="2">客戶名稱：{{ name }}</td>
                             </tr>
                             <tr>
@@ -49,10 +55,10 @@
                             <tr v-for="item in items">
                                 <td class="tg-0lax">{{ item.id }}</td>
                                 <td class="tg-0lax">{{ item.name }}</td>
-                                <td class="tg-0lax">{{ item.quantity }}</td>
+                                <td class="tg-0lax">{{ item.count }}</td>
                                 <td class="tg-0lax">{{ item.unit }}</td>
-                                <td class="tg-0lax">{{ item.custom[0].selling_price }}</td>
-                                <td class="tg-0lax">{{ item.quantity * item.custom[0].selling_price }}</td>
+                                <td class="tg-0lax">{{ item.selling_price.result }}</td>
+                                <td class="tg-0lax">{{ (item.count * item.selling_price.result).toFixed(1) }}</td>
                                 <td class="tg-0lax">0</td>
                                 <td class="tg-0lax"></td>
                             </tr>
@@ -126,7 +132,7 @@ export default {
         this.items = items;
         // 計算總價
         this.total = this.items.reduce((acc, item) => {
-            return acc + item.quantity * item.custom[0].selling_price;
+            return acc + Number((item.count * item.selling_price.result).toFixed(1));
         }, 0);
         this.tax = 0;
     },
@@ -137,6 +143,8 @@ export default {
             document.body.innerHTML = printContents;
             print();
             document.body.innerHTML = originalContents;
+            this.$router.push({ name: "Home" });
+            this.$store.commit("cleanCart");
             window.location.reload();
         }
     }

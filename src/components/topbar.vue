@@ -38,12 +38,12 @@
       </router-link>
     </div>
     <div class="right">
-      <router-link :to="{
+      <!-- <router-link :to="{
         name: 'Admin',
         query: { userid: this.$store.state.user }
       }">
         <EditOutlined class="icon" />
-      </router-link>
+      </router-link> -->
       <router-link :to="{
         name: 'Checkout',
         query: { userid: this.$store.state.user }

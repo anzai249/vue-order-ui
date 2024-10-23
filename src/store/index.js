@@ -1,292 +1,248 @@
-import { createStore } from 'vuex';
+import { createStore } from 'vuex'
 import { message } from "ant-design-vue";
+
+// plugin
 import { listenCart } from "./plugin.js";
-import initSqlJs from 'sql.js';
+import ExcelJS from 'exceljs';
 
-let tempMenu = [];
 
-// 初始化 SQLite 数据库
-function initDatabase() {
-  return new Promise((resolve, reject) => {
-    initSqlJs().then(SQL => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', '/veg_order.db', true);
-      xhr.responseType = 'arraybuffer';
-
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          const uInt8Array = new Uint8Array(this.response);
-          const db = new SQL.Database(uInt8Array);
-          const menu = db.exec("SELECT * FROM menu")[0].values;
-
-          const menuList = menu.map(item => ({
-            category: item[6],
-            id: item[0],
-            name: item[1],
-            purchase_price: item[2],
-            selling_price: item[4],
-            stock: item[3],
-            unit: item[5]
-          }));
-
-          tempMenu = menuList;
-          resolve(db);
-        } else {
-          reject("Failed to load database");
-        }
-      };
-      xhr.onerror = () => reject("Request failed");
-      xhr.send();
-    });
-  });
-}
-
-// 初始化 IndexedDB
-function initIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open("vegDatabase", 1);
-
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      db.createObjectStore("menuStore", { keyPath: "id" });
-    };
-
-    request.onsuccess = (event) => {
-      resolve(event.target.result);
-    };
-
-    request.onerror = () => {
-      reject("Failed to open IndexedDB");
-    };
-  });
-}
-
-// 将数据写入 IndexedDB
-function saveMenuToIndexedDB(menuData) {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open("vegDatabase", 1);
-
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction("menuStore", "readwrite");
-      const objectStore = transaction.objectStore("menuStore");
-
-      menuData.forEach(item => {
-        objectStore.put(item);
-      });
-
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject("Failed to save to IndexedDB");
-    };
-  });
-}
-
-// 从 IndexedDB 获取菜单数据
-function getMenuFromIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open("vegDatabase", 1);
-
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction("menuStore", "readonly");
-      const objectStore = transaction.objectStore("menuStore");
-      const allItems = objectStore.getAll();
-
-      allItems.onsuccess = () => resolve(allItems.result);
-      allItems.onerror = () => reject("Failed to get data from IndexedDB");
-    };
-  });
-}
-
-// 从 IndexedDB 删除菜单项
-function deleteMenuItemFromIndexedDB(id) {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open("vegDatabase", 1);
-
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction("menuStore", "readwrite");
-      const objectStore = transaction.objectStore("menuStore");
-      const deleteRequest = objectStore.delete(id);
-
-      deleteRequest.onsuccess = () => resolve();
-      deleteRequest.onerror = () => reject("Failed to delete item from IndexedDB");
-    };
-  });
-}
-
-// 从 IndexedDB 更新菜单项
-function updateMenuItemInIndexedDB(item) {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open("vegDatabase", 1);
-
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction("menuStore", "readwrite");
-      const objectStore = transaction.objectStore("menuStore");
-      const updateRequest = objectStore.put(item);
-
-      updateRequest.onsuccess = () => resolve();
-      updateRequest.onerror = () => reject("Failed to update item in IndexedDB");
-    };
-  });
-}
-
-// Vuex Store
 const store = createStore({
   state: {
-    menu: [],
-    cart: [],
-    user: new URLSearchParams(window.location.search).get("userid"),
-    db: null
+    "menu": [
+      {
+        "category": "水菜",
+        "id": "loading0-load-load-load-loadingload0",
+        "name": "載入中……",
+        "purchase_price": 0,
+        "selling_price": 0,
+        "stock": '?',
+        "unit": "kg"
+      },
+    ],
+    "cart": [],
+    "db": null
   },
   mutations: {
-    setDb(state, db) {
-      state.db = db;
-    },
-    setMenu(state, menu) {
-      state.menu = menu;
-    },
-    orderFood(state, [foodid, custom]) {
-      const found = state.menu.find(item => item.id === foodid);
-      const customList = custom.flatMap(list => list.items.filter(item => item.checked));
-
-      const cartItem = state.cart.find(item => item.id === foodid);
-      if (cartItem) {
-        cartItem.count++;
-        cartItem.custom.push(customList);
-      } else {
-        const newFood = { ...found, count: 1, custom: [customList] };
-        state.cart.push(newFood);
-      }
-      message.success("已加入購物車");
-    },
-    removeFood(state, [foodid, key]) {
-      const found = state.cart.find(item => item.id === foodid);
-      if (found) {
-        found.count--;
-        if (key) {
-          found.custom.splice(key, 1);
-        } else {
-          found.custom.pop();
-        }
-        if (found.count === 0) {
-          state.cart.splice(state.cart.indexOf(found), 1);
-        }
-      }
-      message.success("移除成功");
-    },
-    setCart(state, cart) {
-      state.cart = cart;
-    },
-    cleanCart(state) {
-      state.cart = [];
-    },
-    addMenuItem(state, item) {
-      state.menu.push(item);
-      return updateMenuItemInIndexedDB({
-        id: item.id,
-        name: item.name,
-        purchase_price: 0,
-        selling_price: 0,
-        stock: 999,
-        unit: item.unit,
-        category: item.category
-      });
-    },
-    deleteMenuItem(state, id) {
-      state.menu = state.menu.filter(item => item.id !== id);
-      return deleteMenuItemFromIndexedDB(id);
-    },
-    updateMenuItem(state, item) {
-      const index = state.menu.findIndex(menuItem => menuItem.id === item.id);
-      if (index !== -1) {
-        state.menu.splice(index, 1, item);
-        return updateMenuItemInIndexedDB({
-          id: item.id,
-          name: item.name,
-          purchase_price: 0,
-          selling_price: 0,
-          stock: 999,
-          unit: item.unit,
-          category: item.category
-        });
-      }
-    },
-    deleteDatabase() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.deleteDatabase("vegDatabase");
-    
-        request.onsuccess = () => {
-          resolve("Database deleted successfully");
-        };
-    
-        request.onerror = () => {
-          reject("Failed to delete database");
-        };
-    
-        request.onblocked = () => {
-          console.warn("Database deletion blocked");
-        };
-      });
-    }
-  },
-  actions: {
-    initializeStore({ commit }) {
-      return Promise.all([initDatabase(), initIndexedDB()])
-        .then(([db]) => {
-          commit('setDb', db);
-          return getMenuFromIndexedDB();
-        })
-        .then(menuFromIndexedDB => {
-          if (menuFromIndexedDB.length > 0) {
-            commit('setMenu', menuFromIndexedDB);
-          } else {
-            commit('setMenu', tempMenu);
-            return saveMenuToIndexedDB(tempMenu);
+    orderFood(state, [foodid, custom, quantity]) {
+      // if out of stock
+      let found = state.menu.map((item) => item).flat().find((item) => item.id === foodid);
+      // custom edit
+      const customList = []
+      custom.forEach(list => {
+        list.items.forEach(item => {
+          if (item.checked) {
+            customList.push(item)
           }
         })
-        .catch(error => {
-          console.error(error);
-        });
+      })
+      // found in cart
+      found = state.cart.find((item) => item.id === foodid);
+      if (found) {
+        found.count += quantity;
+        found.custom.push(customList)
+      } else {
+        // not found in cart
+        // found menu from getters
+        let food = this.getters.findFood(foodid);
+        let newFood = JSON.parse(JSON.stringify(food));
+        newFood.count = quantity;
+        newFood.custom = [customList];
+        state.cart.push(newFood);
+      }
+      message.success("已加入購物車")
+    },
+    removeFood(state, [foodid, key]) {
+      let found = state.cart.find((item) => item.id === foodid);
+      if (found) {
+        found.count = 0;
+        if (key)
+          found.custom.splice(key, 1)
+        else
+          found.custom.pop()
+        if (found.count === 0) {
+          state.cart.splice(state.cart.indexOf(found), 1)
+        }
+      }
+      message.success("移除成功")
+    },
+    setCart(state, cart) {
+      state.cart = cart
+    },
+    cleanCart(state) {
+      state.cart = []
+    },
+    addCustomer(state, customer) {
+      let transaction = db.transaction(["customer"], "readwrite");
+      let objectStore = transaction.objectStore("customer");
+      let request = objectStore.add( customer );
+      request.onsuccess = function (event) {
+        console.log("customer added to db")
+      };
     }
   },
+  actions: {},
   getters: {
     findFood(state) {
-      return (foodid) => state.menu.find(item => item.id === foodid);
+      // found in menu
+      return (foodid) => {
+        return state.menu.map((item) => item).flat().find((item) => item.id === foodid);
+      }
     },
     findCart(state) {
-      return (foodid) => state.cart.find(item => item.id === foodid)?.count;
-    },
-    findCustom(state) {
-      return (foodid) => state.cart.find(item => item.id === foodid)?.custom;
+      // found in cart
+      return (foodid) => {
+        return state.cart.find((item) => item.id === foodid)?.count;
+      }
     },
     foodCount(state) {
-      return state.cart.reduce((total, item) => total + item.count, 0);
+      // found in cart.count
+      return state.cart.map((item) => item.count).reduce((a, b) => a + b, 0);
+    },
+    findType(state) {
+      return (foodid) => {
+        // return state.menu.name
+        return state.menu.find((item) => item.items.find((item) => item.id === foodid));
+      }
     },
     getTotal(state) {
-      return state.cart.reduce((total, food) => {
-        return total + food.custom.flat().reduce((sum, custom) => sum + custom.selling_price, 0);
-      }, 0);
+      let price = 0;
+      state.cart.forEach((food) => {
+        price += Number((food.selling_price.result * food.count).toFixed(1));
+        food.custom.forEach((customList) => {
+          customList.forEach((custom) => {
+            price += Number((custom.selling_price.result).toFixed(1));
+          })
+        })
+      })
+      return Number(price);
     },
     getAllFood(state) {
-      return state.cart.flatMap(item => 
-        Array.from({ length: item.count }, (_, key) => ({
-          ...item,
-          count: undefined,
-          custom: item.custom[key],
-          key
-        }))
-      );
+      // get cart
+      let cart = state.cart;
+      let foodList = []
+      cart.forEach((item) => {
+        let key = 0
+        // for item.count
+        for (let i = 0; i < item.count; i++) {
+          let newItem = JSON.parse(JSON.stringify(item));
+          newItem.count = undefined;
+          newItem.custom = item.custom[i];
+          newItem.key = key;
+          foodList.push(newItem);
+          key++;
+        }
+      })
+      return cart;
     },
     calcPrice() {
-      return (item) => item.custom.reduce((total, custom) => total + custom.selling_price, 0);
+      return (item) => {
+        let price = item.selling_price.result;
+        // item.custom.forEach((item) => {
+        //   price += item.selling_price.result;
+        // })
+        return price;
+      }
     }
   },
   plugins: [listenCart]
-});
+})
 
-// 立即执行加载数据库
-store.dispatch('initializeStore');
 
-export default store;
+fetch('/veg.xlsx')
+  .then(response => response.arrayBuffer())
+  .then(arrayBuffer => {
+    const workbook = new ExcelJS.Workbook();
+    return workbook.xlsx.load(arrayBuffer);
+  })
+  .then(workbook => {
+    const sheet = workbook.worksheets[0];
+    const data = sheet.getSheetValues();
+    const result = data.slice(2).map((item, rowIndex) => ({
+      category: getCategoryName(getCategoryColor(sheet, rowIndex + 2)),
+      name: item[1], // A列
+      selling_price: item[8], // H列
+      unit: "kg",
+      available: item[2] ? true : false, // 检查B列
+      id: rowIndex + 2
+    }));
+    // 篩出available為true的菜單
+    let resultAvailable = result.filter(item => item.available);
+    // selling_price.result 四捨五入
+    resultAvailable.forEach(item => {
+      if (item.selling_price.result) {
+        item.selling_price.result = Math.round(item.selling_price.result);
+      }
+    });
+    store.state.menu = resultAvailable;
+  })
+  .catch(error => {
+    console.error("Error loading file:", error);
+  });
+
+function getCategoryColor(sheet, rowIndex) {
+  const cell = sheet.getCell(`A${rowIndex}`); // A列
+  const fill = cell.style.fill;
+  // 检查是否有填充样式
+  if (fill && fill.fgColor) {
+    return fill.fgColor.theme || fill.fgColor.argb;
+  }
+  return 'default';
+}
+
+// FFFFFF00 - 大菜
+// 5 - 豆類菇類小包菜
+// 9 - 水菜
+// 4 - 根莖類
+function getCategoryName(color) {
+  switch (color) {
+    case 'FFFFFF00':
+      return '大菜';
+    case 5:
+      return '豆類菇類小包菜';
+    case 9:
+      return '水菜';
+    case 4:
+      return '根莖類';
+    default:
+      return '其他';
+  }
+}
+
+// create a customer info db using indexedDB
+let db;
+let request = indexedDB.open("customer", 1);
+request.onerror = function (event) {
+  console.log("error: ");
+};
+request.onsuccess = function (event) {
+  db = event.target.result;
+  store.state.db = db;
+  // get all customer info
+  let transaction = db.transaction(["customer"], "readwrite");
+  let objectStore = transaction.objectStore("customer");
+  let request_ = objectStore.getAll();
+  request_.onsuccess = function (event) {
+    localStorage.setItem("customer", JSON.stringify(event.target.result));
+  };
+};
+request.onupgradeneeded = function (event) {
+  db = event.target.result;
+  let objectStore = db.createObjectStore("customer", {
+    key
+      : "id", autoIncrement: true
+  });
+  objectStore.createIndex("info", "info", { unique: false });
+  objectStore.add({
+    label: '空模板',
+    value: JSON.stringify({
+      name: '',
+      phone: '',
+      address: '',
+      customerid: '',
+      operatorName: '',
+      invoiceTitle: '',
+    })
+  });
+}
+
+export default store
