@@ -21,14 +21,14 @@
       <a-list class="itemList">
         <a-list-item v-for="item in $store.state.menu" :key="item.id" v-show="item.category === key">
           <a-list-item-meta :title="item.name">
-            <template #description>
+            <!-- <template #description>
               <a-space>
                 <div class="priceGroup">
-                  <span style="color: red">NT$ {{ item.selling_price.result }}</span>
-                  <span>/{{ item.unit }}</span>
+                  <span style="color: red">NT$ {{ item.selling_price }}</span>
+                  <span>{{ item.unit }}</span>
                 </div>
               </a-space>
-            </template>
+            </template> -->
             <!-- <template #avatar v-if="item.img">
               <a-image :src="item.img" alt="img" class="foodImage"/>
             </template> -->
@@ -58,8 +58,14 @@
           <span class="foodName">{{ viewTarget.name }}</span>
         </div>
         <div class="price">
-          <span>單價：</span>
-          <span class="priceText">NT$ {{ getPrice() }}</span>
+          <span>設定單價：</span>
+          <a-input-number id="inputNumber" v-model:value="singlePrice" :min="0" prefix="NT$">
+          </a-input-number>
+        </div>
+        <div class="price">
+          <span>設定單位：</span>
+          <a-input style="max-width: 90px" v-model:value="singleUnit">
+          </a-input>
         </div>
       </div>
       <div class="custom">
@@ -69,19 +75,37 @@
             :value="option.id" shape="round" class="typeItem" @click="option.checked = !option.checked">
             {{ option.name }}
             <span class="customPrice">
-              {{ option.selling_price.result ? `&nbsp;\$${option.selling_price.result}` : "" }}
+              {{ option.selling_price ? `&nbsp;\$${option.selling_price}` : "" }}
             </span>
           </a-button>
         </div>
       </div>
+      <span>計價模式：</span>
+      <a-radio-group v-model:value="priceSetting" button-style="solid">
+        <a-radio-button value="quantity">數量</a-radio-button>
+        <a-radio-button value="price">總價</a-radio-button>
+      </a-radio-group>
+
       <div class="customQuantity">
-        <span>數量：</span>
-        <a-input-number id="inputNumber" v-model:value="quantity" :min="0.1">
+        <span>預設數量：</span>
+        <a-input-number id="inputNumber" :disabled="priceSetting === 'price'" v-model:value="quantity" :min="0.1">
         </a-input-number>
       </div>
+      <div class="customPrice">
+        <span>預設總價：</span>
+        <a-input-number id="inputNumber" :disabled="priceSetting === 'quantity'" v-model:value="price" :min="1">
+        </a-input-number>
+      </div>
+      <span>注意：預設總價生成的數量爲捨入后結果，最終價格可能有輕微偏差。</span>
       <template #footer>
         <div class="price" style="float: left">
-          <span class="priceText">NT$ {{ (getPrice() * quantity).toFixed(1) }}</span>
+          <span class="priceText" v-if="priceSetting === 'quantity'">NT$ {{ (singlePrice * quantity).toFixed(1) }}</span>
+          <span class="priceText" v-else>NT$ {{ price }}</span>
+        </div>
+        <div class="quantity" style="float: left">
+          <span>/</span>
+          <span class="quantityText" v-if="priceSetting === 'quantity'">{{ quantity + singleUnit }}</span>
+          <span class="quantityText" v-else>{{ (price / singlePrice).toFixed(1) + singleUnit }}</span>
         </div>
         <a-space>
           <a-button type="primary" v-if="$store.getters.findCart(viewTarget.id) > 0"
@@ -112,15 +136,23 @@ export default {
       viewCustom: [],
       typeFilter: "水菜",
       quantity: 1,
-      searchText: ""
+      price: 1,
+      searchText: "",
+      priceSetting: "quantity",
+      singlePrice: 1,
+      singleUnit: "kg"
     }
   },
   methods: {
     orderFood(foodid) {
       let viewCustom = JSON.parse(JSON.stringify(this.viewCustom));
-      this.$store.commit("orderFood", [foodid, viewCustom, this.quantity]);
+      if (this.priceSetting === "price") {
+        this.quantity = Number((this.price / this.singlePrice).toFixed(1));
+      }
+      this.$store.commit("orderFood", [foodid, viewCustom, this.quantity, this.singlePrice, this.singleUnit]);
       this.$forceUpdate()
       this.quantity = 1;
+      this.singlePrice = 1;
       this.view = false;
     },
     viewFood(foodid) {
@@ -147,15 +179,18 @@ export default {
       // console.log(this.viewCustom);
     },
     getPrice() {
-      let price = this.viewTarget.selling_price.result;
+      let price = this.viewTarget.selling_price;
       this.viewCustom.forEach(type => {
         type.items.forEach(item => {
           if (item.checked) {
-            price += item.selling_price.result;
+            price += item.selling_price;
           }
         })
       });
       return price;
+    },
+    getUnit() {
+      return this.viewTarget.unit;
     },
     search() {
       if (this.searchText === "") {
@@ -171,6 +206,12 @@ export default {
         }
       });
       this.$store.commit("setMenu", result);
+      if (result.length === 0) {
+        this.$message.error("找不到相關菜品");
+      }
+      // auto change typeFilter
+      let typeFilter = result[0].category;
+      this.typeFilter = typeFilter;
     }
   },
   components: {

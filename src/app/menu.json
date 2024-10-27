@@ -1,181 +1,866 @@
 [
   {
-    "name": "拉麵",
-    "items": [
-      {
-        "name": "日式濃厚叉燒拉麵",
-        "img": "https://www.xbyolive.com/wp-content/uploads/2020/11/%E7%8E%89%E7%B1%B3%E9%B8%A1%E8%82%89%E6%8B%89%E9%9D%A2-.jpg",
-        "price": 38
-      },
-      {
-        "name": "日式经典豚骨拉麵",
-        "img": "https://content.fun-japan.jp/renewal-prod/cms/articles/content/shutterstock389519893jpg_2021-12-28-12-03-35.jpg",
-        "price": 38
-      },
-      {
-        "name": "日式浓厚味增拉麵",
-        "img": "https://pic.pimg.tw/dreamycat0421/1442848143-3966685655.jpg",
-        "price": 35
-      },
-      {
-        "name": "日式经典鹽拉麵",
-        "img": "https://img.ltn.com.tw/Upload/food/page/2016/09/03/160903-3025-6-cNZZp.jpg",
-        "price": 35
-      },
-      {
-        "name": "日式醬油拉麵",
-        "img": "https://img.ltn.com.tw/Upload/food/page/2016/09/03/160903-3025-09-QRkrH.jpg",
-        "price": 32
-      }
-    ],
-    "superChild": [
-      {
-        "name": "口味",
-        "items": [
-          {
-            "name": "走葱",
-            "price": 0
-          },
-          {
-            "name": "多面",
-            "price": 0
-          },
-          {
-            "name": "少面",
-            "price": 0
-          }
-        ]
-      },
-      {
-        "name": "加料",
-        "items": [
-          {
-            "name": "加溏心蛋",
-            "price": 12
-          },
-          {
-            "name": "加豚骨",
-            "price": 14
-          },
-          {
-            "name": "加筍乾",
-            "price": 8
-          },
-          {
-            "name": "加魚板",
-            "price": 5
-          }
-        ]
-      }
-    ]
+    "category": "大菜",
+    "id": "雪翠",
+    "name": "雪翠",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
   },
   {
-    "name": "丼飯",
-    "items": [
-      {
-        "name": "極上海鮮丼",
-        "img": "https://resources.matcha-jp.com/archive_files/jp/2016/02/howto_donburi_20160205c-700x466.webp",
-        "price": 50
-      },
-      {
-        "name": "三文魚親子丼",
-        "img": "https://static5.orstatic.com/userphoto2/photo/W/PBW/0504K83FB77F3231EFA9DCpx.jpg",
-        "price": 40
-      },
-      {
-        "name": "天婦羅丼",
-        "img": "https://pic.pimg.tw/rfg73/1545795821-1693305912.jpg",
-        "price": 38
-      },
-      {
-        "name": "蒲燒鰻魚丼",
-        "img": "https://static6.orstatic.com/userphoto2/photo/1Y/1JR6/0B0HAP42014DA9E2BBF688px.jpg",
-        "price": 38
-      },
-      {
-        "name": "經典牛肉丼",
-        "img": "https://www.da-meat.com/upfile/image/8f1853ae2ed972747d86aa243103372fc6710cb5_b2.png",
-        "price": 36
-      },
-      {
-        "name": "炸豬排丼",
-        "img": "https://tokyo-kitchen.icook.network/uploads/recipe/cover/103831/2bb062368fd5c1ed.jpg",
-        "price": 36
-      },
-      {
-        "name": "開心親子丼",
-        "img": "https://resources.matcha-jp.com/archive_files/jp/2016/02/howto_donburi_20160205d-700x466.webp",
-        "price": 30
-      }
-    ],
-    "superChild": [
-      {
-        "name": "分量",
-        "items": [
-          {
-            "name": "加飯",
-            "price": 0
-          },
-          {
-            "name": "少飯",
-            "price": 0
-          },
-          {
-            "name": "轉壽司米",
-            "price": 3
-          }
-        ]
-      }
-    ]
+    "category": "大菜",
+    "id": "初秋",
+    "name": "初秋",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
   },
   {
-    "name": "小吃",
-    "items": [
-      {
-        "name": "日式炸豬排",
-        "img": "https://img.ltn.com.tw/Upload/food/page/2016/11/25/161125-4960-000-4WQJH.jpg",
-        "price": 24,
-        "child": [
-          {
-            "name": "口味",
-            "items": [
-              {
-                "name": "加辣",
-                "price": 0
-              },
-              {
-                "name": "芝士",
-                "price": 1
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "章鱼小丸子 (4粒)",
-        "img": "https://pic3.zhimg.com/80/v2-bd3d489ba30b88c002adc03489e75a76_1440w.webp",
-        "price": 18,
-        "child": [
-          {
-            "name": "分量",
-            "items": [
-              {
-                "name": "加2粒",
-                "price": 8
-              },
-              {
-                "name": "加4粒",
-                "price": 14
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "大阪烧",
-        "img": "https://image.cache.storm.mg/styles/smg-800x533-fp/s3/thumbnails/image/s_002a.jpg",
-        "price": 10
-      }
-    ]
+    "category": "大菜",
+    "id": "進口高麗菜",
+    "name": "進口高麗菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "大白菜",
+    "name": "大白菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "韓大白",
+    "name": "韓大白",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "紫高麗",
+    "name": "紫高麗",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "絲瓜",
+    "name": "絲瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "大黃瓜",
+    "name": "大黃瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "苦瓜",
+    "name": "苦瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "美生菜",
+    "name": "美生菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "青花菜",
+    "name": "青花菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "白花菜",
+    "name": "白花菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "大陸妹",
+    "name": "大陸妹",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "烏殼筍",
+    "name": "烏殼筍",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "筊白筍",
+    "name": "筊白筍",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "蒲仔",
+    "name": "蒲仔",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "圓茄",
+    "name": "圓茄",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "麻糬茄",
+    "name": "麻糬茄",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "小黃瓜",
+    "name": "小黃瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "櫛瓜",
+    "name": "櫛瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "圓櫛瓜",
+    "name": "圓櫛瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "佛手瓜",
+    "name": "佛手瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "青椒",
+    "name": "青椒",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "彩椒",
+    "name": "彩椒",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "糯米椒",
+    "name": "糯米椒",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "剝皮辣椒",
+    "name": "剝皮辣椒",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "牛番茄",
+    "name": "牛番茄",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "洋蔥",
+    "name": "洋蔥",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "紫洋蔥",
+    "name": "紫洋蔥",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "南瓜",
+    "name": "南瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "栗子南瓜",
+    "name": "栗子南瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "貝貝南瓜",
+    "name": "貝貝南瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "豆芽菜",
+    "name": "豆芽菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "黃豆芽",
+    "name": "黃豆芽",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "大菜",
+    "id": "西洋芹",
+    "name": "西洋芹",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "四季豆",
+    "name": "四季豆",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "甜豆",
+    "name": "甜豆",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "長豆",
+    "name": "長豆",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "荷蘭豆",
+    "name": "荷蘭豆",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "皇帝豆",
+    "name": "皇帝豆",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "金針菇",
+    "name": "金針菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "秀珍菇",
+    "name": "秀珍菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "香菇",
+    "name": "香菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "杏包菇",
+    "name": "杏包菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "鴻禧菇",
+    "name": "鴻禧菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "雪白菇",
+    "name": "雪白菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "白精靈菇",
+    "name": "白精靈菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "猴頭菇",
+    "name": "猴頭菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "蘑菇",
+    "name": "蘑菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "草菇",
+    "name": "草菇",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "大耳",
+    "name": "大耳",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "小耳",
+    "name": "小耳",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "娃娃菜",
+    "name": "娃娃菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "水蓮",
+    "name": "水蓮",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "帶殼玉米",
+    "name": "帶殼玉米",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "豆類菇類小包菜",
+    "id": "玉米筍",
+    "name": "玉米筍",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "小白菜",
+    "name": "小白菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "鵝白菜",
+    "name": "鵝白菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "油菜",
+    "name": "油菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "青江菜",
+    "name": "青江菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "空心菜",
+    "name": "空心菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "A菜",
+    "name": "A菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "小芥菜",
+    "name": "小芥菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "芥蘭菜",
+    "name": "芥蘭菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "紅杏菜",
+    "name": "紅杏菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "白杏菜",
+    "name": "白杏菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "茴香",
+    "name": "茴香",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "山茼蒿",
+    "name": "山茼蒿",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "龍鬚菜",
+    "name": "龍鬚菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "皇宮菜",
+    "name": "皇宮菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "菠菜",
+    "name": "菠菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "地瓜葉",
+    "name": "地瓜葉",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "芹菜",
+    "name": "芹菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "香菜",
+    "name": "香菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "青蔥",
+    "name": "青蔥",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "韭菜",
+    "name": "韭菜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "水菜",
+    "id": "韭菜花",
+    "name": "韭菜花",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "黃地瓜",
+    "name": "黃地瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "紅地瓜",
+    "name": "紅地瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "栗子地瓜",
+    "name": "栗子地瓜",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "芋頭",
+    "name": "芋頭",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "嫩薑",
+    "name": "嫩薑",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "老薑",
+    "name": "老薑",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "蒜苗",
+    "name": "蒜苗",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "蒜仁",
+    "name": "蒜仁",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "蒜米",
+    "name": "蒜米",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "白蘿蔔",
+    "name": "白蘿蔔",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "進口白蘿蔔",
+    "name": "進口白蘿蔔",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "紅蔥頭",
+    "name": "紅蔥頭",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "馬鈴薯",
+    "name": "馬鈴薯",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "紅蘿蔔",
+    "name": "紅蘿蔔",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "蓮藕",
+    "name": "蓮藕",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "牛蒡",
+    "name": "牛蒡",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "山藥",
+    "name": "山藥",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "朝天椒",
+    "name": "朝天椒",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
+  },
+  {
+    "category": "根莖類",
+    "id": "大辣椒",
+    "name": "大辣椒",
+    "purchase_price": 1,
+    "selling_price": 1,
+    "stock": 999,
+    "unit": "kg"
   }
 ]

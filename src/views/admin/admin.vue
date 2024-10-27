@@ -6,117 +6,21 @@
     <a-col>
       <a-row :span="12">
         <div class="section">
-          <h2>菜單管理</h2>
-          <div class="add-area">
-            <!-- 需要全部參數 -->
-            <div class="add-item">
-              <a-input v-model:value="newItem.name" placeholder="名稱" />
-              <a-input v-model:value="newItem.unit" placeholder="單位" />
-              <a-select
-                style="width: 100%"
-                v-model:value="newItem.category"
-                placeholder="分類"
-              >
-                <a-select-option value="水菜">水菜</a-select-option>
-                <a-select-option value="大菜">大菜</a-select-option>
-                <a-select-option value="根莖類">根莖類</a-select-option>
-                <a-select-option value="豆類菇類小包菜"
-                  >豆類菇類小包菜</a-select-option
-                >
-              </a-select>
-              <a-button type="primary" @click="addItem"
-                ><PlusOutlined />增加</a-button
-              >
-            </div>
-          </div>
+          <h2>歷史訂單</h2>
           <!-- <a-button class="add-button" type="primary" @click="addItem"><PlusOutlined />增加</a-button> -->
           <a-table
-            :dataSource="$store.state.menu"
+            :dataSource="orders"
             :columns="columns"
             :row-class-name="
               (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
             "
             class="ant-table-striped"
           >
-            <template #bodyCell="{ column, text, record }">
-              <template
-                v-if="
-                  [
-                    'name',
-                    'purchase_price',
-                    'selling_price',
-                    'stock',
-                    'unit',
-                    'category',
-                  ].includes(column.dataIndex)
-                "
-              >
-                <div>
-                  <a-input
-                    v-if="
-                      editableData[record.id] && column.dataIndex !== 'category'
-                    "
-                    v-model:value="editableData[record.id][column.dataIndex]"
-                    style="margin: -5px 0"
-                  />
-                  <!-- choose category -->
-                  <a-select
-                    v-else-if="
-                      column.dataIndex === 'category' && editableData[record.id]
-                    "
-                    v-model:value="editableData[record.id]['category']"
-                    style="width: 100%"
-                  >
-                    <a-select-option
-                      v-for="category in [
-                        '水菜',
-                        '大菜',
-                        '根莖類',
-                        '豆類菇類小包菜',
-                      ]"
-                      :key="category"
-                      :value="category"
-                    >
-                      {{ category }}
-                    </a-select-option>
-                  </a-select>
-                  <template v-else>
-                    {{ text }}
-                  </template>
-                </div>
-              </template>
-              <template v-else-if="column.dataIndex === 'operation'">
-                <div class="editable-row-operations">
-                  <span
-                    class="editable-row-operations-button"
-                    v-if="editableData[record.id]"
-                  >
-                    <a-typography-link @click="save(record.id)"
-                      >保存</a-typography-link
-                    >
-                    <a-popconfirm
-                      class="delete-button"
-                      title="確認要刪除嗎？"
-                      @confirm="delete_item(record.id)"
-                    >
-                      <template #icon
-                        ><question-circle-outlined style="color: red"
-                      /></template>
-                      <a>刪除</a>
-                    </a-popconfirm>
-                    <a-popconfirm
-                      title="確認要取消嗎？"
-                      @confirm="cancel(record.id)"
-                    >
-                      <a>取消</a>
-                    </a-popconfirm>
-                  </span>
-                  <span v-else>
-                    <a @click="edit(record.id)">編輯</a>
-                  </span>
-                </div>
-              </template>
-            </template>
+          <template #expandedRowRender="{ record }">
+            <span v-for="item in record.food">
+              {{ item.name }} x {{ item.count }}<br>
+            </span>
+          </template>
           </a-table>
         </div>
       </a-row>
@@ -130,7 +34,6 @@
 <script>
 import { message } from "ant-design-vue";
 import { QuestionCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
-import initSqlJs from 'sql.js'
 import { uuid } from "jsfast";
 
 export default {
@@ -192,7 +95,8 @@ export default {
     },
   },
   created() {
-    this.menu = this.$store.state.menu;
+    // localStorage歷史訂單
+    this.orders = JSON.parse(localStorage.getItem("history")) || [];
   },
   data() {
     return {
@@ -213,33 +117,60 @@ export default {
       warningModal: false,
       columns: [
         {
-          title: "名稱",
+          title: "ID",
+          dataIndex: "id",
+          key: "id",
+          width: "10%",
+        },
+        {
+          title: "客戶名稱",
           dataIndex: "name",
           key: "name",
+          width: "15%",
           scopedSlots: { customRender: "name" },
+        },
+        {
+          title: "電話",
+          dataIndex: "phone",
+          key: "phone",
           width: "10%",
         },
         {
-          title: "單位",
-          dataIndex: "unit",
-          key: "unit",
-          scopedSlots: { customRender: "unit" },
+          title: "地址",
+          dataIndex: "address",
+          key: "address",
+          width: "15%",
+        },
+        {
+          title: "客戶ID",
+          dataIndex: "customerid",
+          key: "customerid",
           width: "10%",
         },
         {
-          title: "分類",
-          dataIndex: "category",
-          key: "category",
-          scopedSlots: { customRender: "category" },
-          width: "15%",
+          title: "操作員",
+          dataIndex: "operatorName",
+          key: "operatorName",
+          width: "5%",
         },
         {
-          title: "操作",
-          dataIndex: "operation",
-          key: "action",
-          scopedSlots: { customRender: "action" },
-          width: "15%",
+          title: "發票抬頭",
+          dataIndex: "invoiceTitle",
+          key: "invoiceTitle",
+          width: "10%",
         },
+        {
+          title: "備註",
+          dataIndex: "note",
+          key: "note",
+          width: "10%",
+        },
+        {
+          title: "總價",
+          dataIndex: "total",
+          key: "total",
+          width: "10%",
+        }
       ],
     };
   },

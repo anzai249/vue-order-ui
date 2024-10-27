@@ -57,8 +57,8 @@
                                 <td class="tg-0lax">{{ item.name }}</td>
                                 <td class="tg-0lax">{{ item.count }}</td>
                                 <td class="tg-0lax">{{ item.unit }}</td>
-                                <td class="tg-0lax">{{ item.selling_price.result }}</td>
-                                <td class="tg-0lax">{{ (item.count * item.selling_price.result).toFixed(1) }}</td>
+                                <td class="tg-0lax">{{ item.selling_price }}</td>
+                                <td class="tg-0lax">{{ (item.count * item.selling_price).toFixed(1) }}</td>
                                 <td class="tg-0lax">0</td>
                                 <td class="tg-0lax"></td>
                             </tr>
@@ -132,7 +132,7 @@ export default {
         this.items = items;
         // 計算總價
         this.total = this.items.reduce((acc, item) => {
-            return acc + Number((item.count * item.selling_price.result).toFixed(1));
+            return acc + Number((item.count * item.selling_price).toFixed(1));
         }, 0);
         this.tax = 0;
     },

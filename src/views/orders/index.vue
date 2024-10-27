@@ -25,7 +25,7 @@
       <div class="orderItems">
         <div v-for="veg in item.items" class="orderItem">
             <span>{{ veg.name }} （{{ veg.category }}）</span>
-            <span style="color:tomato;">NT${{ veg.selling_price.result }}</span>
+            <span style="color:tomato;">NT${{ veg.selling_price }}</span>
         </div>
       </div>
       <div class="orderMeta">

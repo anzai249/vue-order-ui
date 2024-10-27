@@ -18,7 +18,7 @@
             <a-list-item-meta :title="item.name">
               <template #description>
                 <span style="color: gray;display: block">- 單價：NT$ {{ $store.getters.calcPrice(item) }}</span>
-                <span style="color: gray;display: block">- 重量：{{ item.count }} kg</span>
+                <span style="color: gray;display: block">- 重量：{{ item.count }} {{ item.unit }}</span>
                 <span style="color: red;display: block">NT$ {{ ($store.getters.calcPrice(item) * item.count).toFixed(1)
                   }}</span>
               </template>
@@ -72,6 +72,8 @@
 import { LeftOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import liff from '@line/liff'
+import { uuid } from "jsfast";
+const lc = require('../../app/config.json').localStorageName
 
 export default {
   name: "index",
@@ -159,6 +161,7 @@ export default {
         });
       }
       localStorage.setItem("customer", JSON.stringify(localCustomer));
+      localStorage.setItem(`${lc}-cart`, null);
       this.$router.push({
         name: 'Shipping',
         query: {
@@ -171,6 +174,22 @@ export default {
           note: this.note,
         }
       });
+      // localStorage記錄歷史訂單
+      let history = localStorage.getItem("history") ? JSON.parse(localStorage.getItem("history")) : [];
+      history.push({
+        id: uuid().split('-')[0],
+        name: this.name,
+        phone: this.phone,
+        address: this.address,
+        customerid: this.customerid,
+        operatorName: this.operatorName,
+        invoiceTitle: this.invoiceTitle,
+        note: this.note,
+        food: this.$store.getters.getAllFood,
+        total: this.$store.getters.getTotal,
+        date: new Date().toLocaleString(),
+      });
+      localStorage.setItem("history", JSON.stringify(history));
     },
     handleChange(value) {
       value = JSON.parse(value);

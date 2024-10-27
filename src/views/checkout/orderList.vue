@@ -29,7 +29,7 @@
           <a-list-item-meta :title="item.name">
             <template #description>
               <span style="color: gray;display: block">- 單價：NT$ {{ $store.getters.calcPrice(item) }}</span>
-              <span style="color: gray;display: block">- 重量：{{ item.count }} kg</span>
+              <span style="color: gray;display: block">- 重量：{{ item.count }} {{ item.unit }}</span>
               <span style="color: red;display: block">NT$ {{ ($store.getters.calcPrice(item) * item.count).toFixed(1) }}</span>
             </template>
             <template #avatar v-if="item.img">
