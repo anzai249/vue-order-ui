@@ -75,7 +75,6 @@
           <span>送貨/自取時間（非必填）</span>
           <a-date-picker
             v-model:value="deliverDate"
-            @openChange="onOpenChange(status)"
           />
           <a-time-picker v-model:value="deliverTime" format="HH:mm" />
         </div>
@@ -152,10 +151,10 @@ export default {
         this.address = "到店自取";
       }
       if (this.deliverDate && this.deliverTime) {
-        let combinedDateTime = deliverDate
-          .hour(deliverTime.hour())
-          .minute(deliverTime.minute())
-          .second(deliverTime.second());
+        let combinedDateTime = this.deliverDate
+          .hour(this.deliverTime.hour())
+          .minute(this.deliverTime.minute())
+          .second(this.deliverTime.second());
       }
       if (sessionStorage.getItem("adminAuth")) {
         this.$root.startLoading(() => {
