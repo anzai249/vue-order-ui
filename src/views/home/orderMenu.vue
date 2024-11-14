@@ -6,9 +6,14 @@
         <a-radio-button value="大菜">大菜</a-radio-button>
         <a-radio-button value="根莖類">根莖類</a-radio-button>
         <a-radio-button value="豆類菇類小包菜">豆類菇類小包菜</a-radio-button>
+        <a-radio-button value="冷凍">冷凍</a-radio-button>
+        <a-radio-button value="水果">水果</a-radio-button>
+        <a-radio-button value="其他">其他</a-radio-button>
       </a-radio-group>
     </div>
-    <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜']" v-show="typeFilter===key" :id="`foodItem_${key}`">
+    <div class="block" v-for="key in ['水菜', '大菜', '根莖類', '豆類菇類小包菜', 
+      '冷凍', '水果', '其他'
+    ]" v-show="typeFilter===key" :id="`foodItem_${key}`">
       <span class="title">
         {{ key }}
       </span>

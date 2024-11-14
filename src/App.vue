@@ -1,5 +1,5 @@
 <template>
-  <a-config-provider :autoInsertSpaceInButton="false">
+  <a-config-provider :autoInsertSpaceInButton="false" :locale="locale">
     <a-spin :spinning="loading" size="large" tip="下單中...">
       <Topbar/>
       <div class="fadeTopbar"></div>
@@ -16,6 +16,10 @@
 import Topbar from "./components/topbar.vue";
 import restoreMsg from "./function/restoreMsg.js";
 import {message} from "ant-design-vue";
+import zhTW from 'ant-design-vue/es/locale/zh_TW';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-tw';
+dayjs.locale('zh-tw');
 const lc = require('./app/config.json').localStorageName
 
 export default {
@@ -23,6 +27,7 @@ export default {
   data() {
     return {
       loading: false,
+      locale: zhTW
     }
   },
   components: {Topbar},

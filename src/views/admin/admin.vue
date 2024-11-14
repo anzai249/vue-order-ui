@@ -32,6 +32,9 @@
                 <a-select-option value="豆類菇類小包菜"
                   >豆類菇類小包菜</a-select-option
                 >
+                <a-select-option value="冷凍">冷凍</a-select-option>
+                <a-select-option value="水果">水果</a-select-option>
+                <a-select-option value="其他">其他</a-select-option>
               </a-select>
               <a-button type="primary" @click="addItem"
                 ><PlusOutlined />增加</a-button
@@ -82,6 +85,9 @@
                         '大菜',
                         '根莖類',
                         '豆類菇類小包菜',
+                        '冷凍',
+                        '水果',
+                        '其他',
                       ]"
                       :key="category"
                       :value="category"
