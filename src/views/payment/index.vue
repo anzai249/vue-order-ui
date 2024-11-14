@@ -151,11 +151,13 @@ export default {
         this.address = "到店自取";
       }
       if (this.deliverDate && this.deliverTime) {
+        message.error("日期時間請保留默認");
+        return;
+      }
         let combinedDateTime = this.deliverDate
           .hour(this.deliverTime.hour())
           .minute(this.deliverTime.minute())
           .second(this.deliverTime.second());
-      }
       if (sessionStorage.getItem("adminAuth")) {
         this.$root.startLoading(() => {
           fetch("https://linebot.otakux.org/order-admin", {
