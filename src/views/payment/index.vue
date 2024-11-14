@@ -150,7 +150,7 @@ export default {
       if (this.deliveryMethod === "自取") {
         this.address = "到店自取";
       }
-      if (this.deliverDate && this.deliverTime) {
+      if (!this.deliverDate || !this.deliverTime) {
         message.error("日期時間請保留默認");
         return;
       }
