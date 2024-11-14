@@ -72,7 +72,7 @@
             style="margin-bottom: 10px"
             :disabled="deliveryMethod === '自取'"
           />
-          <span>預約送貨/自取（非必填）</span>
+          <span>送貨/自取時間（非必填）</span>
           <a-date-picker
             v-model:value="deliverDate"
             @openChange="onOpenChange(status)"
