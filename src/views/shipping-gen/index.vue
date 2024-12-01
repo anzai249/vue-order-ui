@@ -15,13 +15,13 @@
                                 <td class="tg-0lax">訂購單號：</td>
                             </tr>
                             <tr>
-                                <td class="tg-0lax">銷貨日期：{{ 
+                                <td class="tg-0lax">銷貨日期：{{
                                     new Date().toLocaleDateString('zh-TW', {
                                         year: 'numeric',
                                         month: '2-digit',
                                         day: '2-digit'
                                     })
-                                    }}</td>
+                                }}</td>
                                 <td class="tg-0lax" colspan="2">客戶名稱：{{ name }}</td>
                             </tr>
                             <tr>
@@ -114,7 +114,7 @@ export default {
         this.operatorName = this.$route.query.operatorName;
         this.invoiceTitle = this.$route.query.invoiceTitle;
         this.note = this.$route.query.note;
-        this.items = this.$store.getters.getAllFood;
+        this.items = localStorage.getItem("printItems") ? JSON.parse(localStorage.getItem("printItems")) : [];
         // 所有物品quantity設為1
         this.items.forEach(item => {
             item.quantity = 1;
@@ -132,7 +132,7 @@ export default {
         this.items = items;
         // 計算總價
         this.total = this.items.reduce((acc, item) => {
-            return acc + Number((item.count * item.selling_price).toFixed(1));
+            return acc + Number((item.count * item.selling_price).toFixed(0));
         }, 0);
         this.tax = 0;
     },
@@ -140,12 +140,105 @@ export default {
         print() {
             let printContents = document.getElementById("toPrint").innerHTML;
             let originalContents = document.body.innerHTML;
-            document.body.innerHTML = printContents;
-            print();
-            document.body.innerHTML = originalContents;
-            this.$router.push({ name: "Home" });
-            this.$store.commit("cleanCart");
-            window.location.reload();
+            // 打開新標籤頁，寫入內容printContents
+            let printWindow = window.open('', '_blank');
+
+            if (printWindow) {
+                // 將內容插入新窗口的 document 中
+                printWindow.document.open();
+                printWindow.document.write(`
+            <html>
+                <head>
+                    <title>列印視窗</title>
+                    <style>
+                        /* 基本樣式 */
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                        }
+
+                        /* 列印樣式 */
+                        @media print {
+                            #header,
+                            #footer,
+                            #nav {
+                                display: none !important;
+                            }
+
+                            /* 設置 A4 紙張大小 */
+                            @page {
+                                size: A4;
+                                margin: 0;
+                            }
+                        }
+                            .container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    height: 400px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: x-large;
+}
+
+.footer {
+    width: 100%;
+    border-top: 1px solid black;
+}
+
+.order-details,
+.customer-details {
+    margin-bottom: 20px;
+}
+
+.order-details table,
+.customer-details table,
+.footer table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-details thead {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.order-details th,
+.order-details td,
+.customer-details th,
+.customer-details td {
+    padding: 1px;
+    text-align: left;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+                    </style>
+                </head>
+                <body>
+                    ${printContents}
+                </body>
+            </html>
+        `);
+                printWindow.document.close();
+
+                // 延遲一點時間以確保內容載入完成，然後調用列印
+                printWindow.onload = function () {
+                    printWindow.print();
+                    printWindow.onafterprint = function () {
+                        // 列印完成後關閉窗口
+                        printWindow.close();
+                    };
+                };
+            } else {
+                alert("無法打開新窗口，請檢查瀏覽器設置。");
+            }
+
         }
     }
 }

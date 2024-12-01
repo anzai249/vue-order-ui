@@ -190,6 +190,8 @@ export default {
         date: new Date().toLocaleString(),
       });
       localStorage.setItem("history", JSON.stringify(history));
+      localStorage.setItem("printItems", JSON.stringify(this.$store.getters.getAllFood));
+      this.$store.commit('cleanCart');
     },
     handleChange(value) {
       value = JSON.parse(value);
