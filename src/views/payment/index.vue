@@ -71,6 +71,7 @@
             v-model:value="address"
             style="margin-bottom: 10px"
             :disabled="deliveryMethod === '自取'"
+            @change="() => { if (deliveryMethod === '送貨') address = '' }"
           />
           <span>送貨/自取時間（非必填）</span>
           <a-date-picker
