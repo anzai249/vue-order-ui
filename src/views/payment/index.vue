@@ -99,7 +99,7 @@
           :disabled="
             !name ||
             !phone ||
-            !address ||
+            (!address && deliveryMethod === '送貨') ||
             $store.getters.getAllFood.length === 0
           "
           @click="paymentEvent()"
