@@ -62,6 +62,7 @@
             v-model:value="deliveryMethod"
             button-style="solid"
             size="large"
+            @change="() => { if (deliveryMethod === '送貨') address = '' }"
           >
             <a-radio-button value="送貨">送貨</a-radio-button>
             <a-radio-button value="自取">自取</a-radio-button>
@@ -71,7 +72,6 @@
             v-model:value="address"
             style="margin-bottom: 10px"
             :disabled="deliveryMethod === '自取'"
-            @change="() => { if (deliveryMethod === '送貨') address = '' }"
           />
           <span>送貨/自取時間（非必填）</span>
           <a-date-picker
