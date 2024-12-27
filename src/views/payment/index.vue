@@ -224,7 +224,7 @@ export default {
             localStorage.setItem("name", this.name);
             localStorage.setItem("phone", this.phone);
             localStorage.setItem("address", this.address);
-            message.success("成功！请退回LINE查看訂單");
+            message.success("點單成功！請等待商家確認。");
             this.$store.commit("cleanCart");
             liff.closeWindow();
           }
